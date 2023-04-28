@@ -1,0 +1,9 @@
+import { z } from "zod";
+
+import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+
+export const sessionRouter = createTRPCRouter({
+  getSession: publicProcedure.query(({ ctx }) => {
+    return ctx.session;
+  }),
+});
