@@ -67,7 +67,8 @@ export const authOptions: NextAuthOptions = {
         if (user.username) {
           return {
             id: user.id.toString(),
-            name: [user.first_name, user.last_name || ""].join(" "),
+            // name: [user.first_name, user.last_name || ""].join(" "),
+            name: user.username,
             image: user.photo_url,
           };
         }
