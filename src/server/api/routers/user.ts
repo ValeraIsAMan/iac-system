@@ -2,7 +2,6 @@ import { z } from "zod";
 import * as trpc from "@trpc/server";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import { Telegraf } from "telegraf";
 import { env } from "@/env.mjs";
 
 export const userRouter = createTRPCRouter({
