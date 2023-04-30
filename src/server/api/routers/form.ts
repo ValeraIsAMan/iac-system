@@ -61,13 +61,11 @@ export const formRouter = createTRPCRouter({
         });
       }
 
-      const bot = new Telegraf(env.BOT_TOKEN);
-      bot.launch();
-      bot.telegram.sendMessage(
-        ctx.session.user.id,
-        "Вы успешно зарегестрировались и отправили форму в Систему ИАЦ, ждите подтверждения от руководителей."
+      const message =
+        "Вы успешно зарегестрировались и отправили форму в Систему ИАЦ, ждите подтверждения от руководителей.";
+      await fetch(
+        `https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage?chat_id=${ctx.session.user.id}&text=${message}&parse_mode=HTML`
       );
-      bot.stop();
 
       return {
         status: 201,

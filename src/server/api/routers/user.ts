@@ -66,13 +66,11 @@ export const userRouter = createTRPCRouter({
         });
       }
 
-      const bot = new Telegraf(env.BOT_TOKEN);
-      await bot.launch();
-      await bot.telegram.sendMessage(
-        id,
-        `Вашу заявку на прохождение практики подтвердили! Начало практики: ${result.startdate?.toDateString()} в 9:00, ваш куратор будет ... В день практики вам отправят ссылку на группу в телеграм!`
+      const message = `Вашу заявку на прохождение практики подтвердили! Начало практики: ${result.startdate?.toDateString()} в 9:00, ваш куратор будет ... В день практики вам отправят ссылку на группу в телеграм!`;
+
+      await fetch(
+        `https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage?chat_id=${id}&text=${message}&parse_mode=HTML`
       );
-      bot.stop();
 
       return {
         status: 201,
