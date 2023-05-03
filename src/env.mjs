@@ -23,6 +23,7 @@ export const env = createEnv({
     // Add `.min(1) on ID and SECRET if you want to make sure they're not empty
     BOT_TOKEN: z.string(),
     BOT_USERNAME: z.string(),
+    ADMIN_ID: z.string(),
   },
 
   /**
@@ -45,5 +46,6 @@ export const env = createEnv({
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     BOT_USERNAME: process.env.BOT_USERNAME,
     BOT_TOKEN: process.env.BOT_TOKEN,
+    ADMIN_ID: process.env.ADMIN_ID,
   },
 });

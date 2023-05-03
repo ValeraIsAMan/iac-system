@@ -52,11 +52,20 @@ export const userRouter = createTRPCRouter({
         where: { telegramID: id },
       });
 
-      const message = `Добрый день ${exists.FIO}, ваша заявка в ИАЦ была отвержена, вероятно надо обновить данные и заполнить данные опять.`;
+      // const minute = 60000;
+      // setTimeout(
+      //   (name: string, token: string, id: string) => {
+      //     const message = `Добрый день ${name}, ваша заявка в ИАЦ была отвержена, вероятно надо обновить данные и заполнить данные опять.`;
 
-      await fetch(
-        `https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage?chat_id=${id}&text=${message}&parse_mode=HTML`
-      );
+      //     fetch(
+      //       `https://api.telegram.org/bot${token}/sendMessage?chat_id=${id}&text=${message}&parse_mode=HTML`
+      //     );
+      //   },
+      //   minute,
+      //   exists.FIO,
+      //   env.BOT_TOKEN,
+      //   id
+      // );
 
       return {
         status: 201,
@@ -65,6 +74,57 @@ export const userRouter = createTRPCRouter({
       };
     }),
   confirmStudent: protectedProcedure
+    .input(z.object({ id: z.string(), curator: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      const { id, curator } = input; //telegram id
+
+      if (curator === "") {
+        throw new trpc.TRPCError({
+          code: "BAD_REQUEST",
+          message: "Curator isnt selected",
+        });
+      }
+
+      const exists = await ctx.prisma.user.findFirst({
+        where: { telegramID: id },
+      });
+
+      if (!exists) {
+        throw new trpc.TRPCError({
+          code: "BAD_REQUEST",
+          message: "User doesn't exists.",
+        });
+      }
+
+      const result = await ctx.prisma.user.update({
+        where: {
+          telegramID: id,
+        },
+        data: {
+          confirmed: true,
+        },
+      });
+
+      if (!result) {
+        throw new trpc.TRPCError({
+          code: "PARSE_ERROR",
+          message: "Telegram ID doesn't exists.",
+        });
+      }
+
+      const message = `Вашу заявку на прохождение практики подтвердили! Начало практики: ${result.startdate?.toDateString()} в 9:00, ваш куратор будет ${curator}.В день практики вам отправят ссылку на группу в телеграм!`;
+
+      await fetch(
+        `https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage?chat_id=${id}&text=${message}&parse_mode=HTML`
+      );
+
+      return {
+        status: 201,
+        message: "Form submitted successfully!",
+        result: { name: result.name },
+      };
+    }),
+  confirmCurator: protectedProcedure
     .input(z.object({ id: z.string(), curator: z.string() }))
     .mutation(async ({ input, ctx }) => {
       const { id, curator } = input; //telegram id
@@ -86,7 +146,6 @@ export const userRouter = createTRPCRouter({
         },
         data: {
           curator,
-          confirmed: true,
         },
       });
 
@@ -97,15 +156,47 @@ export const userRouter = createTRPCRouter({
         });
       }
 
-      const message = `Вашу заявку на прохождение практики подтвердили! Начало практики: ${result.startdate?.toDateString()} в 9:00, ваш куратор будет ${curator}.В день практики вам отправят ссылку на группу в телеграм!`;
+      return {
+        status: 201,
+        message: "Curator changed successfully!",
+        result: { name: result.name },
+      };
+    }),
+  deleteCurator: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      const { id } = input; //telegram id
 
-      await fetch(
-        `https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage?chat_id=${id}&text=${message}&parse_mode=HTML`
-      );
+      const exists = await ctx.prisma.user.findFirst({
+        where: { telegramID: id },
+      });
+
+      if (!exists) {
+        throw new trpc.TRPCError({
+          code: "BAD_REQUEST",
+          message: "User doesn't exists.",
+        });
+      }
+
+      const result = await ctx.prisma.user.update({
+        where: {
+          telegramID: id,
+        },
+        data: {
+          curator: "",
+        },
+      });
+
+      if (!result) {
+        throw new trpc.TRPCError({
+          code: "PARSE_ERROR",
+          message: "Telegram ID doesn't exists.",
+        });
+      }
 
       return {
         status: 201,
-        message: "Form submitted successfully!",
+        message: "Curator deleted successfully!",
         result: { name: result.name },
       };
     }),

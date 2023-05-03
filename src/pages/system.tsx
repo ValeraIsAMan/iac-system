@@ -10,11 +10,13 @@ import { requireAuth } from "@/utils/requireAuth";
 import { getServerAuthSession } from "@/server/auth";
 import toast from "react-hot-toast";
 import { useRef, useState } from "react";
+import { Cross2Icon } from "@radix-ui/react-icons";
+import { env } from "@/env.mjs";
 
 export const getServerSideProps = requireAuth(async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
-  if (session?.user.id !== "1019210352") {
+  if (!env.ADMIN_ID.includes(session?.user?.id as string)) {
     return {
       redirect: {
         destination: "/", // login path
@@ -36,7 +38,7 @@ const Home: NextPage = () => {
     refetch,
   } = api.user.getAllUsers.useQuery();
 
-  const { mutate } = api.user.confirmStudent.useMutation({
+  const { mutate: studentMutate } = api.user.confirmStudent.useMutation({
     onMutate: () => {
       toast.loading("Подтверждение...", {
         id: "confirm",
@@ -108,12 +110,92 @@ const Home: NextPage = () => {
     },
   });
 
+  const { mutate: curatorMutate } = api.user.confirmCurator.useMutation({
+    onMutate: () => {
+      toast.loading("Добавление куратора...", {
+        id: "curator",
+        style: {
+          borderRadius: "10px",
+          background: "#1E1E2A", //#1E1E2A
+          color: "#fff",
+        },
+      });
+    },
+    onError: (error) => {
+      toast.error(error.message, {
+        id: "curator",
+        icon: "🥲",
+        style: {
+          borderRadius: "10px",
+          background: "#F43F5E",
+          color: "#fff",
+        },
+      });
+    },
+    onSuccess: (data) => {
+      toast.success(`Куратор был удален`, {
+        id: "curator",
+        icon: "👏",
+        style: {
+          borderRadius: "10px",
+          background: "#22C55E",
+          color: "#fff",
+        },
+      });
+      refetch();
+    },
+  });
+
+  const { mutate: curatorDeleteMutate } = api.user.deleteCurator.useMutation({
+    onMutate: () => {
+      toast.loading("Удаление...", {
+        id: "curatorDel",
+        style: {
+          borderRadius: "10px",
+          background: "#1E1E2A", //#1E1E2A
+          color: "#fff",
+        },
+      });
+    },
+    onError: (error) => {
+      toast.error(error.message, {
+        id: "curator",
+        icon: "🥲",
+        style: {
+          borderRadius: "10px",
+          background: "#F43F5E",
+          color: "#fff",
+        },
+      });
+    },
+    onSuccess: (data) => {
+      toast.success(`Куратор был удален`, {
+        id: "curatorDel",
+        icon: "👏",
+        style: {
+          borderRadius: "10px",
+          background: "#22C55E",
+          color: "#fff",
+        },
+      });
+      refetch();
+    },
+  });
+
   const deleteStudent = (telegramID: string) => {
     deleteUser({ id: telegramID });
   };
 
   const confirmStudent = (telegramID: string, curator: string) => {
-    mutate({ id: telegramID, curator: curator });
+    studentMutate({ id: telegramID, curator: curator });
+  };
+
+  const confirmCurator = (telegramID: string, curator: string) => {
+    curatorMutate({ id: telegramID, curator: curator });
+  };
+
+  const deleteCurator = (telegramID: string) => {
+    curatorDeleteMutate({ id: telegramID });
   };
 
   const options = [
@@ -136,7 +218,6 @@ const Home: NextPage = () => {
   ];
 
   const [selectedOption, setSelectedOption] = useState(options[0]!.value);
-  const myContainer = useRef(null);
 
   return (
     <>
@@ -269,10 +350,12 @@ const Home: NextPage = () => {
                           {!user.curator ? (
                             <select
                               id={`curator-${index}`}
-                              ref={myContainer}
                               value={selectedOption}
                               onChange={(e) =>
-                                setSelectedOption(e.target.value)
+                                confirmCurator(
+                                  user.telegramID as string,
+                                  e.target.value
+                                )
                               }
                               className="block w-52 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                             >
@@ -283,7 +366,19 @@ const Home: NextPage = () => {
                               ))}
                             </select>
                           ) : (
-                            user.curator
+                            user.curator && (
+                              <div className="flex items-center justify-center">
+                                {user.curator}
+                                <button
+                                  onClick={() =>
+                                    deleteCurator(user.telegramID as string)
+                                  }
+                                  className="ml-5 rounded-full hover:bg-red-500"
+                                >
+                                  <Cross2Icon />
+                                </button>
+                              </div>
+                            )
                           )}
                         </td>
                         <td className="px-6 py-4">{user.eduName}</td>
@@ -303,7 +398,7 @@ const Home: NextPage = () => {
                               () =>
                                 confirmStudent(
                                   user.telegramID as string,
-                                  selectedOption
+                                  user.curator as string
                                 )
                             }
                             className="font-medium text-blue-600 hover:underline dark:text-blue-500"

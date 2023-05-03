@@ -39,7 +39,7 @@ const Form: NextPage = () => {
   const { mutate } = api.form.createForm.useMutation({
     onMutate: () => {
       toast.loading("Sending form...", {
-        id: "additem",
+        id: "form",
         style: {
           borderRadius: "10px",
           background: "#1E1E2A", //#1E1E2A
@@ -49,7 +49,7 @@ const Form: NextPage = () => {
     },
     onError: (error) => {
       toast.error(error.message, {
-        id: "additem",
+        id: "form",
         icon: "🥲",
         style: {
           borderRadius: "10px",
@@ -60,7 +60,7 @@ const Form: NextPage = () => {
     },
     onSuccess: (data) => {
       toast.success(`Form was subbmited!`, {
-        id: "additem",
+        id: "form",
         icon: "👏",
         style: {
           borderRadius: "10px",
