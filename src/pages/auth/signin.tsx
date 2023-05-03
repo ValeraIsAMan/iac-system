@@ -15,7 +15,7 @@ const Signin = () => {
         <LoginButton
           botUsername={botUsername}
           onAuthCallback={(data) => {
-            signIn("telegram-login", { callbackUrl: "/" }, data as any);
+            void signIn("telegram-login", { callbackUrl: "/" }, data as any);
           }}
         />
 

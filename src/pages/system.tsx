@@ -4,7 +4,7 @@ import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
 
 import { useRouter } from "next/router";
-import { Loading } from "@/components/Loading";
+
 import { api } from "@/utils/api";
 import { requireAuth } from "@/utils/requireAuth";
 import { getServerAuthSession } from "@/server/auth";

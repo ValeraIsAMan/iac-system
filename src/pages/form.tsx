@@ -1,14 +1,13 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import Link from "next/link";
-import { signIn, signOut, useSession } from "next-auth/react";
+
+import { useSession } from "next-auth/react";
 
 import { useRouter } from "next/router";
-import { Loading } from "@/components/Loading";
 import { Controller, useForm } from "react-hook-form";
 import { Form, FormSchema } from "@/server/schema/form.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Spinner from "@/components/Spinner";
+
 import { useState } from "react";
 import DatePicker from "react-datepicker";
 import { api } from "@/utils/api";
@@ -297,7 +296,7 @@ const Form: NextPage = () => {
                     disabled={loading}
                     className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
                   >
-                    {loading ? <Spinner /> : "Отправить"}
+                    {loading ? "loading" : "Отправить"}
                   </button>
                 </div>
               </form>
