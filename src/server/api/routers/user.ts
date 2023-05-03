@@ -70,7 +70,6 @@ export const userRouter = createTRPCRouter({
       return {
         status: 201,
         message: "Student deleted successfully!",
-        result: { name: result.name },
       };
     }),
   confirmStudent: protectedProcedure
@@ -112,7 +111,7 @@ export const userRouter = createTRPCRouter({
         });
       }
 
-      const message = `Вашу заявку на прохождение практики подтвердили! Начало практики: ${result.startdate?.toDateString()} в 9:00, ваш куратор будет ${curator}.В день практики вам отправят ссылку на группу в телеграм!`;
+      const message = `Вашу заявку на прохождение практики подтвердили! Начало практики: ${result?.startdate?.toDateString()} в 9:00, ваш куратор будет ${curator}.В день практики вам отправят ссылку на группу в телеграм!`;
 
       await fetch(
         `https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage?chat_id=${id}&text=${message}&parse_mode=HTML`
@@ -159,7 +158,6 @@ export const userRouter = createTRPCRouter({
       return {
         status: 201,
         message: "Curator changed successfully!",
-        result: { name: result.name },
       };
     }),
   deleteCurator: protectedProcedure
@@ -197,7 +195,6 @@ export const userRouter = createTRPCRouter({
       return {
         status: 201,
         message: "Curator deleted successfully!",
-        result: { name: result.name },
       };
     }),
 });
