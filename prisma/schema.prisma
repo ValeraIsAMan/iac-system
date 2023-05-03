@@ -55,6 +55,8 @@ model User {
   phonenumber        String?
   startdate          DateTime?
   enddate            DateTime?
+  napravlenie        String?
+  otchet             String?
   curator            String?
   eduName            String?
   specialty          String?

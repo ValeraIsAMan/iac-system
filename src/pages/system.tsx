@@ -9,6 +9,7 @@ import { api } from "@/utils/api";
 import { requireAuth } from "@/utils/requireAuth";
 import { getServerAuthSession } from "@/server/auth";
 import toast from "react-hot-toast";
+import { useRef, useState } from "react";
 
 export const getServerSideProps = requireAuth(async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -34,6 +35,7 @@ const Home: NextPage = () => {
     status: queryStatus,
     refetch,
   } = api.user.getAllUsers.useQuery();
+
   const { mutate } = api.user.confirmStudent.useMutation({
     onMutate: () => {
       toast.loading("Подтверждение...", {
@@ -70,9 +72,71 @@ const Home: NextPage = () => {
     },
   });
 
-  const confirmStudent = (telegramID: string) => {
-    mutate({ id: telegramID });
+  const { mutate: deleteUser } = api.user.deleteStudent.useMutation({
+    onMutate: () => {
+      toast.loading("Удаление...", {
+        id: "confirm",
+        style: {
+          borderRadius: "10px",
+          background: "#1E1E2A", //#1E1E2A
+          color: "#fff",
+        },
+      });
+    },
+    onError: (error) => {
+      toast.error(error.message, {
+        id: "confirm",
+        icon: "🥲",
+        style: {
+          borderRadius: "10px",
+          background: "#F43F5E",
+          color: "#fff",
+        },
+      });
+    },
+    onSuccess: (data) => {
+      toast.success(`Студент был удален`, {
+        id: "confirm",
+        icon: "👏",
+        style: {
+          borderRadius: "10px",
+          background: "#22C55E",
+          color: "#fff",
+        },
+      });
+      refetch();
+    },
+  });
+
+  const deleteStudent = (telegramID: string) => {
+    deleteUser({ id: telegramID });
   };
+
+  const confirmStudent = (telegramID: string, curator: string) => {
+    mutate({ id: telegramID, curator: curator });
+  };
+
+  const options = [
+    {
+      name: "Select…",
+      value: "",
+    },
+    {
+      name: "Александр Юрьеви",
+      value: "Александр Юрьеви",
+    },
+    {
+      name: "Кого еще кроме Александра Юрьевича",
+      value: "Кого еще кроме Александра Юрьевича",
+    },
+    {
+      name: "Александр Юрьевич лучший!",
+      value: "Александр Юрьевич лучший!",
+    },
+  ];
+
+  const [selectedOption, setSelectedOption] = useState(options[0]!.value);
+  const myContainer = useRef(null);
 
   return (
     <>
@@ -122,6 +186,12 @@ const Home: NextPage = () => {
                     <th scope="col" className="px-6 py-3">
                       Конец практики
                     </th>
+                    <th scope="col" className=" px-6 py-3">
+                      Направление
+                    </th>
+                    <th scope="col" className="  px-6 py-3">
+                      Отчет
+                    </th>
                     <th scope="col" className="px-6 py-3">
                       Куратор
                     </th>
@@ -162,7 +232,11 @@ const Home: NextPage = () => {
                           {user.FIO}
                         </th>
                         <td className="px-6 py-4">
-                          <a href={`https://t.me/${user.name}`} target="_blank">
+                          <a
+                            href={`https://t.me/${user.name}`}
+                            target="_blank"
+                            className="underline"
+                          >
                             {user.name}
                           </a>
                         </td>
@@ -173,7 +247,45 @@ const Home: NextPage = () => {
                         <td className="px-6 py-4">
                           {user.enddate?.toLocaleDateString()}
                         </td>
-                        <td className="px-6 py-4">{user.curator}</td>
+                        <td className=" px-6 py-4">
+                          <a
+                            href={user.napravlenie!}
+                            target="_blank"
+                            className="w-32 truncate text-left underline"
+                          >
+                            Ссылка на диск
+                          </a>
+                        </td>
+                        <td className=" px-6 py-4">
+                          <a
+                            href={user.otchet!}
+                            target="_blank"
+                            className="w-32 truncate text-left underline"
+                          >
+                            Ссылка на диск
+                          </a>
+                        </td>
+                        <td className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white">
+                          {!user.curator ? (
+                            <select
+                              id={`curator-${index}`}
+                              ref={myContainer}
+                              value={selectedOption}
+                              onChange={(e) =>
+                                setSelectedOption(e.target.value)
+                              }
+                              className="block w-52 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                            >
+                              {options.map((item) => (
+                                <option key={item.value} value={item.value}>
+                                  {item.name}
+                                </option>
+                              ))}
+                            </select>
+                          ) : (
+                            user.curator
+                          )}
+                        </td>
                         <td className="px-6 py-4">{user.eduName}</td>
                         <td className="px-6 py-4">{user.specialty}</td>
                         <td className="px-6 py-4">{user.year}</td>
@@ -186,15 +298,22 @@ const Home: NextPage = () => {
                         </td>
                         <td className="flex items-center space-x-3 px-6 py-4">
                           <button
-                            onClick={() =>
-                              confirmStudent(user.telegramID as string)
+                            onClick={
+                              // () => console.log(selectedOption)
+                              () =>
+                                confirmStudent(
+                                  user.telegramID as string,
+                                  selectedOption
+                                )
                             }
                             className="font-medium text-blue-600 hover:underline dark:text-blue-500"
                           >
                             Подтвердить
                           </button>
                           <button
-                            // onClick={}
+                            onClick={() =>
+                              deleteStudent(user.telegramID as string)
+                            }
                             className="font-medium text-red-600 hover:underline dark:text-red-500"
                           >
                             Удалить

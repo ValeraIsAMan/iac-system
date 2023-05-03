@@ -174,52 +174,35 @@ const Form: NextPage = () => {
                   <span className="text-red-500">This field is required</span>
                 )}
 
-                {/* <label
-              htmlFor="napravlenie"
-              className="mb-2 block text-sm font-medium text-white"
-            >
-              Направление
-            </label>
-            <input
-              id="napravlenie"
-              type="text"
-              placeholder="Направление"
-              className=" mb-2 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-              {...register("napravlenie", { required: true })}
-            />
-            {errors.napravlenie && <span>This field is required</span>}
+                <label
+                  htmlFor="napravlenie"
+                  className="mb-2 block text-sm font-medium text-white"
+                >
+                  Направление
+                </label>
+                <input
+                  id="napravlenie"
+                  type="link"
+                  placeholder="Направление прикрепить ссылкой на яндекс диск"
+                  className=" mb-2 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                  {...register("napravlenie", { required: true })}
+                />
+                {errors.napravlenie && <span>This field is required</span>}
 
-            <label
-              htmlFor="otchet"
-              className="mb-2 block text-sm font-medium text-white"
-            >
-              Отчет
-            </label>
-            <input
-              id="otchet"
-              type="text"
-              placeholder="Отчет"
-              className=" mb-2 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-              {...register("otchet", { required: true })}
-            />
-            {errors.otchet && <span>This field is required</span>} */}
-
-                {/* <label
-                    htmlFor="curator"
-                    className="mb-2 block text-sm font-medium text-white"
-                  >
-                    Куратор
-                  </label>
-                  <input
-                    id="curator"
-                    type="text"
-                    placeholder="curator"
-                    className=" mb-2 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                    {...register("curator", { required: true })}
-                  />
-                  {errors.curator && (
-                    <span className="text-red-500">This field is required</span>
-                  )} */}
+                <label
+                  htmlFor="otchet"
+                  className="mb-2 block text-sm font-medium text-white"
+                >
+                  Отчет
+                </label>
+                <input
+                  id="otchet"
+                  type="link"
+                  placeholder="Отчет прикрепить ссылкой на яндекс диск"
+                  className=" mb-2 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                  {...register("otchet", { required: true })}
+                />
+                {errors.otchet && <span>This field is required</span>}
 
                 <label
                   htmlFor="eduName"
