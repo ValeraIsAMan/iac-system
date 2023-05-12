@@ -64,8 +64,15 @@ model User {
   emailVerified      DateTime?
   image              String?
   confirmed          Boolean?  @default(false)
+  signed             Boolean?  @default(false)
   accounts           Account[]
   sessions           Session[]
+}
+
+model Curator {
+  id         String  @id @default(cuid())
+  telegramID String? @unique
+  FIO        String?
 }
 
 model VerificationToken {

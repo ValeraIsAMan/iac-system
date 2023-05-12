@@ -15,4 +15,10 @@ export const FormSchema = z.object({
   // work: z.boolean(),
 });
 
+export const CuratorSchema = z.object({
+  FIO: z.string(),
+  telegramID: z.string(),
+});
+
 export type Form = z.infer<typeof FormSchema>;
+export type Curator = z.infer<typeof CuratorSchema>;

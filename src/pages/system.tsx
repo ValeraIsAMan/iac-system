@@ -12,6 +12,9 @@ import toast from "react-hot-toast";
 import { useRef, useState } from "react";
 import { Cross2Icon } from "@radix-ui/react-icons";
 import { env } from "@/env.mjs";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Curator, CuratorSchema } from "@/server/schema/form.schema";
 
 export const getServerSideProps = requireAuth(async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -33,10 +36,22 @@ const Home: NextPage = () => {
   const router = useRouter();
 
   const {
+    control,
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Curator>({
+    resolver: zodResolver(CuratorSchema),
+  });
+
+  const {
     data: users,
     status: queryStatus,
     refetch,
   } = api.user.getAllUsers.useQuery();
+
+  const { data: curators, refetch: refetchCurator } =
+    api.user.getAllCurators.useQuery();
 
   const { mutate: studentMutate } = api.user.confirmStudent.useMutation({
     onMutate: () => {
@@ -181,6 +196,111 @@ const Home: NextPage = () => {
       refetch();
     },
   });
+  const { mutate: signMutate } = api.user.confirmSigning.useMutation({
+    onMutate: () => {
+      toast.loading("Отправление...", {
+        id: "sign",
+        style: {
+          borderRadius: "10px",
+          background: "#1E1E2A", //#1E1E2A
+          color: "#fff",
+        },
+      });
+    },
+    onError: (error) => {
+      toast.error(error.message, {
+        id: "sign",
+        icon: "🥲",
+        style: {
+          borderRadius: "10px",
+          background: "#F43F5E",
+          color: "#fff",
+        },
+      });
+    },
+    onSuccess: (data) => {
+      toast.success(`Студент оповещен`, {
+        id: "sign",
+        icon: "👏",
+        style: {
+          borderRadius: "10px",
+          background: "#22C55E",
+          color: "#fff",
+        },
+      });
+      refetch();
+    },
+  });
+  const { mutate: createCuratorMutate } = api.user.createCurator.useMutation({
+    onMutate: () => {
+      toast.loading("Создание...", {
+        id: "curatorCreate",
+        style: {
+          borderRadius: "10px",
+          background: "#1E1E2A", //#1E1E2A
+          color: "#fff",
+        },
+      });
+    },
+    onError: (error) => {
+      toast.error(error.message, {
+        id: "curatorCreate",
+        icon: "🥲",
+        style: {
+          borderRadius: "10px",
+          background: "#F43F5E",
+          color: "#fff",
+        },
+      });
+    },
+    onSuccess: (data) => {
+      toast.success(`Создан куратор`, {
+        id: "curatorCreate",
+        icon: "👏",
+        style: {
+          borderRadius: "10px",
+          background: "#22C55E",
+          color: "#fff",
+        },
+      });
+      refetchCurator();
+    },
+  });
+  const { mutate: deleteCuratorMutate } = api.user.deleteCurators.useMutation({
+    onMutate: () => {
+      toast.loading("Удаление...", {
+        id: "curatorCreate",
+        style: {
+          borderRadius: "10px",
+          background: "#1E1E2A", //#1E1E2A
+          color: "#fff",
+        },
+      });
+    },
+    onError: (error) => {
+      toast.error(error.message, {
+        id: "curatorCreate",
+        icon: "🥲",
+        style: {
+          borderRadius: "10px",
+          background: "#F43F5E",
+          color: "#fff",
+        },
+      });
+    },
+    onSuccess: (data) => {
+      toast.success(`Удален куратор`, {
+        id: "curatorCreate",
+        icon: "👏",
+        style: {
+          borderRadius: "10px",
+          background: "#22C55E",
+          color: "#fff",
+        },
+      });
+      refetchCurator();
+    },
+  });
 
   const deleteStudent = (telegramID: string) => {
     deleteUser({ id: telegramID });
@@ -196,6 +316,18 @@ const Home: NextPage = () => {
 
   const deleteCurator = (telegramID: string) => {
     curatorDeleteMutate({ id: telegramID });
+  };
+
+  const documentSigned = (telegramID: string) => {
+    signMutate({ id: telegramID });
+  };
+
+  const onSubmit = (data: Curator) => {
+    createCuratorMutate({ id: data.telegramID, FIO: data.FIO });
+  };
+
+  const deleteCurators = (telegramId: string) => {
+    deleteCuratorMutate({ id: telegramId });
   };
 
   const options = [
@@ -216,8 +348,6 @@ const Home: NextPage = () => {
       value: "Александр Юрьевич лучший!",
     },
   ];
-
-  const [selectedOption, setSelectedOption] = useState(options[0]!.value);
 
   return (
     <>
@@ -249,6 +379,7 @@ const Home: NextPage = () => {
             </div>
 
             <div className="container relative overflow-x-auto shadow-md sm:rounded-lg">
+              <h1>Студенты</h1>
               <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
                 <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
@@ -292,7 +423,10 @@ const Home: NextPage = () => {
                       Трудоустройство
                     </th>
                     <th scope="col" className="px-6 py-3">
-                      Подтвержден?
+                      Подтвержден
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      Документы подписаны
                     </th>
                     <th scope="col" className="px-6 py-3">
                       Действие
@@ -350,7 +484,6 @@ const Home: NextPage = () => {
                           {!user.curator ? (
                             <select
                               id={`curator-${index}`}
-                              value={selectedOption}
                               onChange={(e) =>
                                 confirmCurator(
                                   user.telegramID as string,
@@ -359,9 +492,12 @@ const Home: NextPage = () => {
                               }
                               className="block w-52 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                             >
-                              {options.map((item) => (
-                                <option key={item.value} value={item.value}>
-                                  {item.name}
+                              {curators?.map((item) => (
+                                <option
+                                  key={item.id}
+                                  value={item.FIO as string}
+                                >
+                                  {item.FIO}
                                 </option>
                               ))}
                             </select>
@@ -391,6 +527,9 @@ const Home: NextPage = () => {
                         <td className="px-6 py-4">
                           {user.confirmed ? "Да" : "Нет"}
                         </td>
+                        <td className="px-6 py-4">
+                          {user.signed ? "Да" : "Нет"}
+                        </td>
                         <td className="flex items-center space-x-3 px-6 py-4">
                           <button
                             onClick={
@@ -407,6 +546,14 @@ const Home: NextPage = () => {
                           </button>
                           <button
                             onClick={() =>
+                              documentSigned(user.telegramID as string)
+                            }
+                            className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                          >
+                            Документы подписаны
+                          </button>
+                          <button
+                            onClick={() =>
                               deleteStudent(user.telegramID as string)
                             }
                             className="font-medium text-red-600 hover:underline dark:text-red-500"
@@ -417,6 +564,96 @@ const Home: NextPage = () => {
                       </tr>
                     );
                   })}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="container relative overflow-x-auto shadow-md sm:rounded-lg">
+              <h1>Кураторы</h1>
+              <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
+                <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                  <tr>
+                    <th scope="col" className="px-6 py-3">
+                      ФИО
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      TelegramID
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      Действие
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {curators?.map((c, index) => {
+                    return (
+                      <tr
+                        key={index}
+                        className="border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600"
+                      >
+                        <th
+                          scope="row"
+                          className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
+                        >
+                          {c.FIO}
+                        </th>
+                        <td className="px-6 py-4">{c.telegramID}</td>
+
+                        <td className="flex items-center space-x-3 px-6 py-4">
+                          <button
+                            onClick={() =>
+                              deleteCurators(c.telegramID as string)
+                            }
+                            className="font-medium text-red-600 hover:underline dark:text-red-500"
+                          >
+                            Удалить
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                  <tr className="border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600">
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                      <th
+                        scope="row"
+                        className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
+                      >
+                        <input
+                          id="name"
+                          placeholder="ФИО Куратора"
+                          type="text"
+                          {...register("FIO", { required: true })}
+                        ></input>
+                        {errors.FIO && (
+                          <span className="text-red-500">
+                            This field is required
+                          </span>
+                        )}
+                      </th>
+                      <td className="px-6 py-4">
+                        <input
+                          id="telegram"
+                          placeholder="TelegramID"
+                          type="text"
+                          {...register("telegramID", { required: true })}
+                        ></input>
+                        {errors.telegramID && (
+                          <span className="text-red-500">
+                            This field is required
+                          </span>
+                        )}
+                      </td>
+
+                      <td className="flex items-center space-x-3 px-6 py-4">
+                        <button
+                          type="submit"
+                          className="font-medium text-red-600 hover:underline dark:text-red-500"
+                        >
+                          Создать
+                        </button>
+                      </td>
+                    </form>
+                  </tr>
                 </tbody>
               </table>
             </div>
