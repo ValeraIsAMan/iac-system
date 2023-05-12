@@ -612,8 +612,8 @@ const Home: NextPage = () => {
                       </tr>
                     );
                   })}
-                  <tr className="border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600">
-                    <form onSubmit={handleSubmit(onSubmit)}>
+                  <form onSubmit={handleSubmit(onSubmit)}>
+                    <tr className="border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600">
                       <th
                         scope="row"
                         className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
@@ -647,13 +647,13 @@ const Home: NextPage = () => {
                       <td className="flex items-center space-x-3 px-6 py-4">
                         <button
                           type="submit"
-                          className="font-medium text-red-600 hover:underline dark:text-red-500"
+                          className="font-medium text-green-600 hover:underline dark:text-green-500"
                         >
                           Создать
                         </button>
                       </td>
-                    </form>
-                  </tr>
+                    </tr>
+                  </form>
                 </tbody>
               </table>
             </div>
