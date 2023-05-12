@@ -378,7 +378,9 @@ const Home: NextPage = () => {
               </button>
             </div>
             <div>
-              <h1 className="text-center text-2xl font-semibold">Студенты</h1>
+              <h1 className="text-center text-2xl font-semibold text-white">
+                Студенты
+              </h1>
               <div className="container relative overflow-x-auto shadow-md sm:rounded-lg">
                 <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
                   <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
@@ -572,7 +574,9 @@ const Home: NextPage = () => {
             </div>
 
             <div>
-              <h1 className="text-center text-2xl font-semibold">Кураторы</h1>
+              <h1 className="text-center text-2xl font-semibold text-white">
+                Кураторы
+              </h1>
               <div className="container relative overflow-x-auto shadow-md sm:rounded-lg">
                 <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
                   <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
@@ -616,50 +620,52 @@ const Home: NextPage = () => {
                         </tr>
                       );
                     })}
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                      <tr className="border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600">
-                        <th
-                          scope="row"
-                          className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
-                        >
-                          <input
-                            id="name"
-                            placeholder="ФИО Куратора"
-                            type="text"
-                            {...register("FIO", { required: true })}
-                          ></input>
-                          {errors.FIO && (
-                            <span className="text-red-500">
-                              This field is required
-                            </span>
-                          )}
-                        </th>
-                        <td className="px-6 py-4">
-                          <input
-                            id="telegram"
-                            placeholder="TelegramID"
-                            type="text"
-                            {...register("telegramID", { required: true })}
-                          ></input>
-                          {errors.telegramID && (
-                            <span className="text-red-500">
-                              This field is required
-                            </span>
-                          )}
-                        </td>
-
-                        <td className="flex items-center space-x-3 px-6 py-4">
-                          <button
-                            type="submit"
-                            className="font-medium text-green-600 hover:underline dark:text-green-500"
-                          >
-                            Создать
-                          </button>
-                        </td>
-                      </tr>
-                    </form>
                   </tbody>
                 </table>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                  <tr className="border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600">
+                    <th
+                      scope="row"
+                      className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
+                    >
+                      <input
+                        id="name"
+                        placeholder="ФИО Куратора"
+                        type="text"
+                        className="text-black dark:text-white"
+                        {...register("FIO", { required: true })}
+                      ></input>
+                      {errors.FIO && (
+                        <span className="text-red-500">
+                          This field is required
+                        </span>
+                      )}
+                    </th>
+                    <td className="px-6 py-4">
+                      <input
+                        id="telegram"
+                        placeholder="TelegramID"
+                        type="text"
+                        className="text-black dark:text-white"
+                        {...register("telegramID", { required: true })}
+                      ></input>
+                      {errors.telegramID && (
+                        <span className="text-red-500">
+                          This field is required
+                        </span>
+                      )}
+                    </td>
+
+                    <td className="flex items-center space-x-3 px-6 py-4">
+                      <button
+                        type="submit"
+                        className="font-medium text-green-600 hover:underline dark:text-green-500"
+                      >
+                        Создать
+                      </button>
+                    </td>
+                  </tr>
+                </form>
               </div>
             </div>
           </>
