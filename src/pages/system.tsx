@@ -307,7 +307,7 @@ const Home: NextPage = () => {
   };
 
   const confirmStudent = (telegramID: string, curator: string) => {
-    studentMutate({ id: telegramID, curator: curator });
+    studentMutate({ id: telegramID, curator: curator || "" });
   };
 
   const confirmCurator = (telegramID: string, curator: string) => {
