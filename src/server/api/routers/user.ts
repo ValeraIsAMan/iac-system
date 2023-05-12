@@ -89,7 +89,7 @@ export const userRouter = createTRPCRouter({
     .mutation(async ({ input, ctx }) => {
       const { id, curator } = input; //telegram id
 
-      if (curator === "") {
+      if (curator === "" || curator === null) {
         throw new trpc.TRPCError({
           code: "BAD_REQUEST",
           message: "Curator isnt selected",
