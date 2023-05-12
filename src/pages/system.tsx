@@ -377,285 +377,290 @@ const Home: NextPage = () => {
                 {session ? "Sign out" : "Sign in"}
               </button>
             </div>
-
-            <div className="container relative overflow-x-auto shadow-md sm:rounded-lg">
-              <h1>Студенты</h1>
-              <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
-                <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
-                  <tr>
-                    <th scope="col" className="px-6 py-3">
-                      ФИО
-                    </th>
-                    <th scope="col" className="px-6 py-3">
-                      Telegram
-                    </th>
-                    <th scope="col" className="px-6 py-3">
-                      Номер телефона
-                    </th>
-                    <th scope="col" className="px-6 py-3">
-                      Начало практики
-                    </th>
-                    <th scope="col" className="px-6 py-3">
-                      Конец практики
-                    </th>
-                    <th scope="col" className=" px-6 py-3">
-                      Направление
-                    </th>
-                    <th scope="col" className="  px-6 py-3">
-                      Отчет
-                    </th>
-                    <th scope="col" className="px-6 py-3">
-                      Куратор
-                    </th>
-                    <th scope="col" className="px-6 py-3">
-                      Наименование учебного учреждения
-                    </th>
-                    <th scope="col" className="px-6 py-3">
-                      Наименование специальности
-                    </th>
-                    <th scope="col" className="px-6 py-3">
-                      Курс
-                    </th>
-                    <th scope="col" className="px-6 py-3">
-                      Вид практики
-                    </th>
-                    <th scope="col" className="px-6 py-3">
-                      Трудоустройство
-                    </th>
-                    <th scope="col" className="px-6 py-3">
-                      Подтвержден
-                    </th>
-                    <th scope="col" className="px-6 py-3">
-                      Документы подписаны
-                    </th>
-                    <th scope="col" className="px-6 py-3">
-                      Действие
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {users?.map((user, index) => {
-                    return (
-                      <tr
-                        key={index}
-                        className="border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600"
-                      >
-                        <th
-                          scope="row"
-                          className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
+            <div>
+              <h1 className="text-center text-2xl font-semibold">Студенты</h1>
+              <div className="container relative overflow-x-auto shadow-md sm:rounded-lg">
+                <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
+                  <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                      <th scope="col" className="px-6 py-3">
+                        ФИО
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Telegram
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Номер телефона
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Начало практики
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Конец практики
+                      </th>
+                      <th scope="col" className=" px-6 py-3">
+                        Направление
+                      </th>
+                      <th scope="col" className="  px-6 py-3">
+                        Отчет
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Куратор
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Наименование учебного учреждения
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Наименование специальности
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Курс
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Вид практики
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Трудоустройство
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Подтвержден
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Документы подписаны
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Действие
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {users?.map((user, index) => {
+                      return (
+                        <tr
+                          key={index}
+                          className="border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600"
                         >
-                          {user.FIO}
-                        </th>
-                        <td className="px-6 py-4">
-                          <a
-                            href={`https://t.me/${user.name}`}
-                            target="_blank"
-                            className="underline"
+                          <th
+                            scope="row"
+                            className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
                           >
-                            {user.name}
-                          </a>
-                        </td>
-                        <td className="px-6 py-4">{user.phonenumber}</td>
-                        <td className="px-6 py-4">
-                          {user.startdate?.toLocaleDateString()}
-                        </td>
-                        <td className="px-6 py-4">
-                          {user.enddate?.toLocaleDateString()}
-                        </td>
-                        <td className=" px-6 py-4">
-                          <a
-                            href={user.napravlenie!}
-                            target="_blank"
-                            className="w-32 truncate text-left underline"
-                          >
-                            Ссылка на диск
-                          </a>
-                        </td>
-                        <td className=" px-6 py-4">
-                          <a
-                            href={user.otchet!}
-                            target="_blank"
-                            className="w-32 truncate text-left underline"
-                          >
-                            Ссылка на диск
-                          </a>
-                        </td>
-                        <td className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white">
-                          {!user.curator ? (
-                            <select
-                              id={`curator-${index}`}
-                              onChange={(e) =>
-                                confirmCurator(
-                                  user.telegramID as string,
-                                  e.target.value
-                                )
-                              }
-                              className="block w-52 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                            {user.FIO}
+                          </th>
+                          <td className="px-6 py-4">
+                            <a
+                              href={`https://t.me/${user.name}`}
+                              target="_blank"
+                              className="underline"
                             >
-                              {curators?.map((item) => (
-                                <option
-                                  key={item.id}
-                                  value={item.FIO as string}
-                                >
-                                  {item.FIO}
-                                </option>
-                              ))}
-                            </select>
-                          ) : (
-                            user.curator && (
-                              <div className="flex items-center justify-center">
-                                {user.curator}
-                                <button
-                                  onClick={() =>
-                                    deleteCurator(user.telegramID as string)
-                                  }
-                                  className="ml-5 rounded-full hover:bg-red-500"
-                                >
-                                  <Cross2Icon />
-                                </button>
-                              </div>
-                            )
-                          )}
-                        </td>
-                        <td className="px-6 py-4">{user.eduName}</td>
-                        <td className="px-6 py-4">{user.specialty}</td>
-                        <td className="px-6 py-4">{user.year}</td>
-                        <td className="px-6 py-4">{user.apprenticeshipType}</td>
-                        <td className="px-6 py-4">
-                          {user.employment ? "Да" : "Нет"}
-                        </td>
-                        <td className="px-6 py-4">
-                          {user.confirmed ? "Да" : "Нет"}
-                        </td>
-                        <td className="px-6 py-4">
-                          {user.signed ? "Да" : "Нет"}
-                        </td>
-                        <td className="flex items-center space-x-3 px-6 py-4">
-                          <button
-                            onClick={
-                              // () => console.log(selectedOption)
-                              () =>
-                                confirmStudent(
-                                  user.telegramID as string,
-                                  user.curator as string
-                                )
-                            }
-                            className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-                          >
-                            Подтвердить
-                          </button>
-                          <button
-                            onClick={() =>
-                              documentSigned(user.telegramID as string)
-                            }
-                            className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-                          >
-                            Документы подписаны
-                          </button>
-                          <button
-                            onClick={() =>
-                              deleteStudent(user.telegramID as string)
-                            }
-                            className="font-medium text-red-600 hover:underline dark:text-red-500"
-                          >
-                            Удалить
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                              {user.name}
+                            </a>
+                          </td>
+                          <td className="px-6 py-4">{user.phonenumber}</td>
+                          <td className="px-6 py-4">
+                            {user.startdate?.toLocaleDateString()}
+                          </td>
+                          <td className="px-6 py-4">
+                            {user.enddate?.toLocaleDateString()}
+                          </td>
+                          <td className=" px-6 py-4">
+                            <a
+                              href={user.napravlenie!}
+                              target="_blank"
+                              className="w-32 truncate text-left underline"
+                            >
+                              Ссылка на диск
+                            </a>
+                          </td>
+                          <td className=" px-6 py-4">
+                            <a
+                              href={user.otchet!}
+                              target="_blank"
+                              className="w-32 truncate text-left underline"
+                            >
+                              Ссылка на диск
+                            </a>
+                          </td>
+                          <td className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white">
+                            {!user.curator ? (
+                              <select
+                                id={`curator-${index}`}
+                                onChange={(e) =>
+                                  confirmCurator(
+                                    user.telegramID as string,
+                                    e.target.value
+                                  )
+                                }
+                                className="block w-52 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                              >
+                                {curators?.map((item) => (
+                                  <option
+                                    key={item.id}
+                                    value={item.FIO as string}
+                                  >
+                                    {item.FIO}
+                                  </option>
+                                ))}
+                              </select>
+                            ) : (
+                              user.curator && (
+                                <div className="flex items-center justify-center">
+                                  {user.curator}
+                                  <button
+                                    onClick={() =>
+                                      deleteCurator(user.telegramID as string)
+                                    }
+                                    className="ml-5 rounded-full hover:bg-red-500"
+                                  >
+                                    <Cross2Icon />
+                                  </button>
+                                </div>
+                              )
+                            )}
+                          </td>
+                          <td className="px-6 py-4">{user.eduName}</td>
+                          <td className="px-6 py-4">{user.specialty}</td>
+                          <td className="px-6 py-4">{user.year}</td>
+                          <td className="px-6 py-4">
+                            {user.apprenticeshipType}
+                          </td>
+                          <td className="px-6 py-4">
+                            {user.employment ? "Да" : "Нет"}
+                          </td>
+                          <td className="px-6 py-4">
+                            {user.confirmed ? "Да" : "Нет"}
+                          </td>
+                          <td className="px-6 py-4">
+                            {user.signed ? "Да" : "Нет"}
+                          </td>
+                          <td className="flex items-center space-x-3 px-6 py-4">
+                            <button
+                              onClick={
+                                // () => console.log(selectedOption)
+                                () =>
+                                  confirmStudent(
+                                    user.telegramID as string,
+                                    user.curator as string
+                                  )
+                              }
+                              className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                            >
+                              Подтвердить
+                            </button>
+                            <button
+                              onClick={() =>
+                                documentSigned(user.telegramID as string)
+                              }
+                              className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                            >
+                              Документы подписаны
+                            </button>
+                            <button
+                              onClick={() =>
+                                deleteStudent(user.telegramID as string)
+                              }
+                              className="font-medium text-red-600 hover:underline dark:text-red-500"
+                            >
+                              Удалить
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
 
-            <div className="container relative overflow-x-auto shadow-md sm:rounded-lg">
-              <h1>Кураторы</h1>
-              <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
-                <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
-                  <tr>
-                    <th scope="col" className="px-6 py-3">
-                      ФИО
-                    </th>
-                    <th scope="col" className="px-6 py-3">
-                      TelegramID
-                    </th>
-                    <th scope="col" className="px-6 py-3">
-                      Действие
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {curators?.map((c, index) => {
-                    return (
-                      <tr
-                        key={index}
-                        className="border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600"
-                      >
+            <div>
+              <h1 className="text-center text-2xl font-semibold">Кураторы</h1>
+              <div className="container relative overflow-x-auto shadow-md sm:rounded-lg">
+                <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
+                  <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                      <th scope="col" className="px-6 py-3">
+                        ФИО
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        TelegramID
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Действие
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {curators?.map((c, index) => {
+                      return (
+                        <tr
+                          key={index}
+                          className="border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600"
+                        >
+                          <th
+                            scope="row"
+                            className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
+                          >
+                            {c.FIO}
+                          </th>
+                          <td className="px-6 py-4">{c.telegramID}</td>
+
+                          <td className="flex items-center space-x-3 px-6 py-4">
+                            <button
+                              onClick={() =>
+                                deleteCurators(c.telegramID as string)
+                              }
+                              className="font-medium text-red-600 hover:underline dark:text-red-500"
+                            >
+                              Удалить
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                      <tr className="border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600">
                         <th
                           scope="row"
                           className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
                         >
-                          {c.FIO}
+                          <input
+                            id="name"
+                            placeholder="ФИО Куратора"
+                            type="text"
+                            {...register("FIO", { required: true })}
+                          ></input>
+                          {errors.FIO && (
+                            <span className="text-red-500">
+                              This field is required
+                            </span>
+                          )}
                         </th>
-                        <td className="px-6 py-4">{c.telegramID}</td>
+                        <td className="px-6 py-4">
+                          <input
+                            id="telegram"
+                            placeholder="TelegramID"
+                            type="text"
+                            {...register("telegramID", { required: true })}
+                          ></input>
+                          {errors.telegramID && (
+                            <span className="text-red-500">
+                              This field is required
+                            </span>
+                          )}
+                        </td>
 
                         <td className="flex items-center space-x-3 px-6 py-4">
                           <button
-                            onClick={() =>
-                              deleteCurators(c.telegramID as string)
-                            }
-                            className="font-medium text-red-600 hover:underline dark:text-red-500"
+                            type="submit"
+                            className="font-medium text-green-600 hover:underline dark:text-green-500"
                           >
-                            Удалить
+                            Создать
                           </button>
                         </td>
                       </tr>
-                    );
-                  })}
-                  <form onSubmit={handleSubmit(onSubmit)}>
-                    <tr className="border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600">
-                      <th
-                        scope="row"
-                        className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
-                      >
-                        <input
-                          id="name"
-                          placeholder="ФИО Куратора"
-                          type="text"
-                          {...register("FIO", { required: true })}
-                        ></input>
-                        {errors.FIO && (
-                          <span className="text-red-500">
-                            This field is required
-                          </span>
-                        )}
-                      </th>
-                      <td className="px-6 py-4">
-                        <input
-                          id="telegram"
-                          placeholder="TelegramID"
-                          type="text"
-                          {...register("telegramID", { required: true })}
-                        ></input>
-                        {errors.telegramID && (
-                          <span className="text-red-500">
-                            This field is required
-                          </span>
-                        )}
-                      </td>
-
-                      <td className="flex items-center space-x-3 px-6 py-4">
-                        <button
-                          type="submit"
-                          className="font-medium text-green-600 hover:underline dark:text-green-500"
-                        >
-                          Создать
-                        </button>
-                      </td>
-                    </tr>
-                  </form>
-                </tbody>
-              </table>
+                    </form>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </>
         </div>
