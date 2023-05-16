@@ -1,9 +1,14 @@
 import * as trpc from "@trpc/server";
 
-import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import { FormSchema } from "@/server/schema/form.schema";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "@/server/api/trpc";
+import { FormSchema, PraktSchema } from "@/server/schema/form.schema";
 
 import { env } from "@/env.mjs";
+import { EduSchema } from "@/server/schema/form.schema";
 
 export const formRouter = createTRPCRouter({
   createForm: protectedProcedure
@@ -71,5 +76,84 @@ export const formRouter = createTRPCRouter({
         message: "Form submitted successfully!",
         result: { name: result.name },
       };
+    }),
+  getEduNames: publicProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.eduName.findMany();
+  }),
+  getApreticeshipNames: publicProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.apprenticeshipType.findMany();
+  }),
+  createEduFac: protectedProcedure
+    .input(EduSchema)
+    .mutation(async ({ ctx, input }) => {
+      const result = await ctx.prisma.eduName.create({
+        data: {
+          name: input.name,
+        },
+      });
+
+      if (!result) {
+        throw new trpc.TRPCError({
+          code: "BAD_REQUEST",
+          message: "Error creating educational facility.",
+        });
+      }
+
+      return result;
+    }),
+  deleteEduFac: protectedProcedure
+    .input(EduSchema)
+    .mutation(async ({ ctx, input }) => {
+      const result = await ctx.prisma.eduName.delete({
+        where: {
+          name: input.name,
+        },
+      });
+
+      if (!result) {
+        throw new trpc.TRPCError({
+          code: "BAD_REQUEST",
+          message: "Error deleting educational facility.",
+        });
+      }
+
+      return result;
+    }),
+
+  createPraktType: protectedProcedure
+    .input(PraktSchema)
+    .mutation(async ({ ctx, input }) => {
+      const result = await ctx.prisma.apprenticeshipType.create({
+        data: {
+          name: input.name,
+        },
+      });
+
+      if (!result) {
+        throw new trpc.TRPCError({
+          code: "BAD_REQUEST",
+          message: "Error creating praktical type.",
+        });
+      }
+
+      return result;
+    }),
+  deletePraktType: protectedProcedure
+    .input(PraktSchema)
+    .mutation(async ({ ctx, input }) => {
+      const result = await ctx.prisma.apprenticeshipType.delete({
+        where: {
+          name: input.name,
+        },
+      });
+
+      if (!result) {
+        throw new trpc.TRPCError({
+          code: "BAD_REQUEST",
+          message: "Error deleting praktical type.",
+        });
+      }
+
+      return result;
     }),
 });

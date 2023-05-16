@@ -62,7 +62,7 @@ export const authOptions: NextAuthOptions = {
 
         const user = await validator.validate(data);
 
-        // console.log(JSON.stringify(user));
+        console.log(JSON.stringify(user, null, 4));
 
         if (user.username) {
           return {
@@ -78,7 +78,7 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    session:({ session, token }) => {
+    session: ({ session, token }) => {
       if (session?.user) {
         session.user.id = token.sub as string;
       }

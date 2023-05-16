@@ -75,6 +75,16 @@ model Curator {
   FIO        String?
 }
 
+model EduName {
+  id   String  @id @default(cuid())
+  name String? @unique
+}
+
+model ApprenticeshipType {
+  id   String  @id @default(cuid())
+  name String? @unique
+}
+
 model VerificationToken {
   identifier String
   token      String   @unique
