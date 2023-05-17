@@ -56,7 +56,7 @@ export const userRouter = createTRPCRouter({
       if (!exists) {
         throw new trpc.TRPCError({
           code: "BAD_REQUEST",
-          message: "User doesn't exists.",
+          message: "Пользователя не существует",
         });
       }
 
@@ -92,7 +92,7 @@ export const userRouter = createTRPCRouter({
       if (curator === "" || curator === null) {
         throw new trpc.TRPCError({
           code: "BAD_REQUEST",
-          message: "Curator isnt selected",
+          message: "Куратор не выбран!!!",
         });
       }
 
@@ -103,7 +103,7 @@ export const userRouter = createTRPCRouter({
       if (!exists) {
         throw new trpc.TRPCError({
           code: "BAD_REQUEST",
-          message: "User doesn't exists.",
+          message: "Пользователя не существует",
         });
       }
 
@@ -116,14 +116,31 @@ export const userRouter = createTRPCRouter({
         },
       });
 
+      const curatorQuery = await ctx.prisma.curator.findUnique({
+        where: {
+          FIO: curator,
+        },
+      });
+
       if (!result) {
         throw new trpc.TRPCError({
           code: "PARSE_ERROR",
-          message: "Telegram ID doesn't exists.",
+          message: "Не получилось обновить",
         });
       }
 
-      const message = `Вашу заявку на прохождение практики подтвердили! Начало практики: ${result?.startdate?.toDateString()} в 9:00, ваш куратор будет ${curator}.В день практики вам отправят ссылку на группу в телеграм!`;
+      const link = curatorQuery?.link?.includes("https://")
+        ? curatorQuery?.link?.replace("https://", "")
+        : curatorQuery?.link;
+
+      const message = `Вашу заявку на прохождение практики подтвердили! Начало практики: ${result?.startdate?.toLocaleDateString(
+        "ru-RU",
+        {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        }
+      )} в 9:00, Вашим куратором будет ${curator}. Вступите, пожалуйста, в группу по следующей ссылке ${link}`;
 
       await fetch(
         `https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage?chat_id=${id}&text=${message}&parse_mode=HTML`
@@ -147,7 +164,7 @@ export const userRouter = createTRPCRouter({
       if (!exists) {
         throw new trpc.TRPCError({
           code: "BAD_REQUEST",
-          message: "User doesn't exists.",
+          message: "Пользователя не существует",
         });
       }
 
@@ -184,7 +201,7 @@ export const userRouter = createTRPCRouter({
       if (!exists) {
         throw new trpc.TRPCError({
           code: "BAD_REQUEST",
-          message: "User doesn't exists.",
+          message: "Пользователя не существует",
         });
       }
 
@@ -221,7 +238,7 @@ export const userRouter = createTRPCRouter({
       if (!exists) {
         throw new trpc.TRPCError({
           code: "BAD_REQUEST",
-          message: "User doesn't exists.",
+          message: "Пользователя не существует",
         });
       }
 
@@ -253,9 +270,9 @@ export const userRouter = createTRPCRouter({
       };
     }),
   createCurator: protectedProcedure
-    .input(z.object({ id: z.string(), FIO: z.string() }))
+    .input(z.object({ id: z.string(), FIO: z.string(), link: z.string() }))
     .mutation(async ({ input, ctx }) => {
-      const { id, FIO } = input; //telegram id
+      const { id, FIO, link } = input; //telegram id
 
       const exists = await ctx.prisma.curator.findFirst({
         where: { telegramID: id },
@@ -264,7 +281,7 @@ export const userRouter = createTRPCRouter({
       if (exists) {
         throw new trpc.TRPCError({
           code: "BAD_REQUEST",
-          message: "Curator already exists.",
+          message: "Куратор уже существует.",
         });
       }
 
@@ -272,6 +289,7 @@ export const userRouter = createTRPCRouter({
         data: {
           telegramID: id,
           FIO: FIO,
+          link: link,
         },
       });
 
@@ -299,7 +317,7 @@ export const userRouter = createTRPCRouter({
       if (!exists) {
         throw new trpc.TRPCError({
           code: "BAD_REQUEST",
-          message: "Curator doesnt exists.",
+          message: "Куратора не существует.",
         });
       }
 

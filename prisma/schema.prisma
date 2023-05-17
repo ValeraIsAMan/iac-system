@@ -52,8 +52,8 @@ model User {
   phonenumber        String?
   startdate          DateTime?
   enddate            DateTime?
-  napravlenie        String?
-  otchet             String?
+  napravlenie        String?   @db.Text
+  otchet             String?   @db.Text
   curator            String?
   eduName            String?
   specialty          String?
@@ -72,7 +72,8 @@ model User {
 model Curator {
   id         String  @id @default(cuid())
   telegramID String? @unique
-  FIO        String?
+  FIO        String? @unique
+  link       String?
 }
 
 model EduName {

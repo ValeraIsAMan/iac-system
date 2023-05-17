@@ -14,6 +14,7 @@ import { Sidebar } from "@/components/Sidebar";
 import { Nav } from "@/components/Nav";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export const getServerSideProps = requireAuth(async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -118,7 +119,11 @@ const Curators: NextPage = () => {
   });
 
   const onSubmit = (data: Curator) => {
-    createCuratorMutate({ id: data.telegramID, FIO: data.FIO });
+    createCuratorMutate({
+      id: data.telegramID,
+      FIO: data.FIO,
+      link: data.link,
+    });
   };
 
   const deleteCurators = (telegramId: string) => {
@@ -155,6 +160,9 @@ const Curators: NextPage = () => {
                       TelegramID
                     </th>
                     <th scope="col" className="px-6 py-3">
+                      Ссылка в группу
+                    </th>
+                    <th scope="col" className="px-6 py-3">
                       Действие
                     </th>
                   </tr>
@@ -178,7 +186,16 @@ const Curators: NextPage = () => {
                         >
                           {c.FIO}
                         </th>
+
                         <td className="px-6 py-4">{c.telegramID}</td>
+                        <th
+                          scope="row"
+                          className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 underline dark:text-white"
+                        >
+                          <Link href={"https://" + c.link!} target="_blank">
+                            {c.link}
+                          </Link>
+                        </th>
 
                         <td className="flex items-center space-x-3 px-6 py-4">
                           <button
@@ -206,6 +223,20 @@ const Curators: NextPage = () => {
                       {...register("FIO", { required: true })}
                     />
                     {errors.FIO && (
+                      <span className="text-red-500">
+                        This field is required
+                      </span>
+                    )}
+                  </div>
+                  <div className="px-6 py-4">
+                    <Input
+                      id="link"
+                      placeholder="Ссылка"
+                      type="text"
+                      className="text-black dark:text-white"
+                      {...register("link", { required: true })}
+                    />
+                    {errors.link && (
                       <span className="text-red-500">
                         This field is required
                       </span>

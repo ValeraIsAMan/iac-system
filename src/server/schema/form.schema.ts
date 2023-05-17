@@ -18,6 +18,7 @@ export const FormSchema = z.object({
 export const CuratorSchema = z.object({
   FIO: z.string(),
   telegramID: z.string(),
+  link: z.string(),
 });
 
 export const EduSchema = z.object({

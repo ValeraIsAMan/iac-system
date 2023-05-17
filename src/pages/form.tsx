@@ -52,9 +52,6 @@ initFirebase();
 
 const storage = getStorage();
 
-const storageRef = ref(storage, new Date().toISOString());
-const storageRef2 = ref(storage, new Date().toISOString() + "12");
-
 type Image = {
   imageFile: Blob;
 };
@@ -69,6 +66,9 @@ const Form: NextPage = () => {
 
   const [imageUrlNapravlenie, setImageUrlNapravlenie] = useState<string>("");
   const [imageUrlOtchet, setImageUrlOtchet] = useState<string>("");
+
+  const [fileName1, setFileName1] = useState("");
+  const [fileName2, setFileName2] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -146,9 +146,6 @@ const Form: NextPage = () => {
   }, []);
 
   const { getRootProps, getInputProps, open } = useDropzone({
-    accept: {
-      "application/pdf": [".pdf"],
-    },
     useFsAccessApi: false,
     maxFiles: 1,
     noClick: true,
@@ -167,9 +164,6 @@ const Form: NextPage = () => {
     getInputProps: getInputProps2,
     open: open2,
   } = useDropzone({
-    accept: {
-      "application/pdf": [".pdf"],
-    },
     useFsAccessApi: false,
     maxFiles: 1,
     noClick: true,
@@ -180,7 +174,10 @@ const Form: NextPage = () => {
   const uploadImage = async ({ imageFile }: Image) => {
     try {
       setLoading(true);
-
+      const storageRef = ref(
+        storage,
+        "Направление_" + new Date().toISOString() + "_" + imageFile.name
+      );
       const uploadTask = uploadBytesResumable(storageRef, imageFile);
 
       uploadTask.on(
@@ -196,6 +193,7 @@ const Form: NextPage = () => {
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             setImageUrlNapravlenie(downloadURL);
+            setFileName1(imageFile.name);
             setLoading(false);
             setSuccess(true);
           });
@@ -210,7 +208,10 @@ const Form: NextPage = () => {
   const uploadImage2 = async ({ imageFile }: Image) => {
     try {
       setLoading2(true);
-
+      const storageRef2 = ref(
+        storage,
+        "Отчет_" + new Date().toISOString() + "_" + imageFile.name
+      );
       const uploadTask = uploadBytesResumable(storageRef2, imageFile);
 
       uploadTask.on(
@@ -226,6 +227,7 @@ const Form: NextPage = () => {
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             setImageUrlOtchet(downloadURL);
+            setFileName2(imageFile.name);
             setLoading2(false);
             setSuccess2(true);
           });
@@ -267,10 +269,10 @@ const Form: NextPage = () => {
                   type="text"
                   placeholder="Иван Иванович"
                   className=" mb-2 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                  {...register("FIO", { required: true })}
+                  {...register("FIO", { required: true, minLength: 1 })}
                 />
                 {errors.FIO && (
-                  <span className="text-red-500">This field is required</span>
+                  <span className="text-red-500">Это поле обязательное!</span>
                 )}
 
                 <label
@@ -281,15 +283,17 @@ const Form: NextPage = () => {
                 </label>
                 <Input
                   id="phonenumber"
-                  type="tel"
-                  placeholder="e.g. 88912739871"
+                  type="number"
+                  placeholder="e.g. 89052252431"
                   className="mb-2 block w-full  rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                   {...register("phonenumber", {
                     required: true,
+                    minLength: 9,
+                    maxLength: 11,
                   })}
                 />
                 {errors.phonenumber && (
-                  <span className="text-red-500">This field is required</span>
+                  <span className="text-red-500">Это поле обязательное!</span>
                 )}
 
                 <label
@@ -332,7 +336,7 @@ const Form: NextPage = () => {
                 />
 
                 {errors.startdate && (
-                  <span className="text-red-500">This field is required</span>
+                  <span className="text-red-500">Это поле обязательное!</span>
                 )}
 
                 <label
@@ -374,7 +378,7 @@ const Form: NextPage = () => {
                 />
 
                 {errors.enddate && (
-                  <span className="text-red-500">This field is required</span>
+                  <span className="text-red-500">Это поле обязательное!</span>
                 )}
 
                 <label
@@ -424,10 +428,10 @@ const Form: NextPage = () => {
                   {loading && <UploadProgress progress={progress} />}
 
                   {success && (
-                    <p className="font-bold text-white">Файл был добавлен</p>
+                    <p className="font-bold text-white">{fileName1}</p>
                   )}
                 </div>
-                {errors.napravlenie && <span>This field is required</span>}
+                {errors.napravlenie && <span>Это поле обязательное!</span>}
                 <input
                   type="text"
                   hidden
@@ -482,7 +486,7 @@ const Form: NextPage = () => {
                   {loading2 && <UploadProgress progress={progress2} />}
 
                   {success2 && (
-                    <p className="font-bold text-white">Файл был добавлен</p>
+                    <p className="font-bold text-white">{fileName2}</p>
                   )}
                 </div>
 
@@ -494,7 +498,7 @@ const Form: NextPage = () => {
                   {...register("otchet", { required: true })}
                 />
 
-                {errors.otchet && <span>This field is required</span>}
+                {errors.otchet && <span>Это поле обязательное!</span>}
 
                 <label
                   htmlFor="eduName"
@@ -517,7 +521,7 @@ const Form: NextPage = () => {
                             {item.name}
                           </SelectItem>
                         ))}
-                        <SelectItem value="Другое">Другое</SelectItem>
+                        {/* <SelectItem value="Другое">Другое</SelectItem> */}
                       </SelectContent>
                     </Select>
                   )}
@@ -534,7 +538,7 @@ const Form: NextPage = () => {
                   )} */}
 
                 {errors.eduName && (
-                  <span className="text-red-500">This field is required</span>
+                  <span className="text-red-500">Это поле обязательное!</span>
                 )}
 
                 <label
@@ -546,12 +550,12 @@ const Form: NextPage = () => {
                 <Input
                   id="specialty"
                   type="text"
-                  placeholder="Программист, Сис-админ, Дизайнер"
+                  placeholder="09.02.07 Информационные системы и программирование"
                   className=" mb-2 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                   {...register("specialty", { required: true })}
                 />
                 {errors.specialty && (
-                  <span className="text-red-500">This field is required</span>
+                  <span className="text-red-500">Это поле обязательное!</span>
                 )}
 
                 <label
@@ -568,7 +572,7 @@ const Form: NextPage = () => {
                   {...register("year", { required: true, min: 1, max: 6 })}
                 />
                 {errors.year && (
-                  <span className="text-red-500">This field is required</span>
+                  <span className="text-red-500">Это поле обязательное!</span>
                 )}
 
                 <label
@@ -605,7 +609,7 @@ const Form: NextPage = () => {
                   )}
                 />
                 {errors.apprenticeshipType && (
-                  <span className="text-red-500">This field is required</span>
+                  <span className="text-red-500">Это поле обязательное!</span>
                 )}
 
                 <div className=" flex justify-center">

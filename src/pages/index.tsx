@@ -56,9 +56,16 @@ const Home: NextPage = () => {
                     <span className="text-red-500"> Неподтвержден</span>
                   )}
                 </div>
-                <p>Вы будите добавлены в группу в день начала практики.</p>
                 <p>
-                  Дата начала практики: {user?.startdate?.toLocaleDateString()}
+                  После подтверждения, вам прийдет сообщение с ссылкой в группу.
+                </p>
+                <p>
+                  Дата начала практики:{" "}
+                  {user?.startdate?.toLocaleDateString("ru-RU", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                  })}
                 </p>
               </div>
             )}
