@@ -45,6 +45,8 @@ import {
 import UploadProgress from "@/components/uploadProgress";
 import UploadPreview from "@/components/uploadPreview";
 import { useCallback, useState } from "react";
+import { Input } from "@/components/ui/input";
+import { EduName } from "@prisma/client";
 
 initFirebase();
 
@@ -81,6 +83,7 @@ const Form: NextPage = () => {
     control,
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<Form>({
     resolver: zodResolver(FormSchema),
@@ -145,8 +148,6 @@ const Form: NextPage = () => {
   const { getRootProps, getInputProps, open } = useDropzone({
     accept: {
       "application/pdf": [".pdf"],
-      "application/*": [".pdf"],
-      "": [".pdf"],
     },
     useFsAccessApi: false,
     maxFiles: 1,
@@ -168,8 +169,6 @@ const Form: NextPage = () => {
   } = useDropzone({
     accept: {
       "application/pdf": [".pdf"],
-      "application/*": [".pdf"],
-      "": [".pdf"],
     },
     useFsAccessApi: false,
     maxFiles: 1,
@@ -263,7 +262,7 @@ const Form: NextPage = () => {
                 >
                   ФИО
                 </label>
-                <input
+                <Input
                   id="name"
                   type="text"
                   placeholder="Иван Иванович"
@@ -280,9 +279,9 @@ const Form: NextPage = () => {
                 >
                   Номер телефона
                 </label>
-                <input
+                <Input
                   id="phonenumber"
-                  type="number"
+                  type="tel"
                   placeholder="e.g. 88912739871"
                   className="mb-2 block w-full  rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                   {...register("phonenumber", {
@@ -308,7 +307,7 @@ const Form: NextPage = () => {
                         <Button
                           variant={"outline"}
                           className={cn(
-                            "w-[280px] justify-start bg-white text-left font-normal"
+                            "w-full justify-start bg-white text-left font-normal"
                             // !field.value && "text-muted-foreground"
                           )}
                         >
@@ -351,7 +350,7 @@ const Form: NextPage = () => {
                         <Button
                           variant={"outline"}
                           className={cn(
-                            "w-[280px] justify-start bg-white text-left font-normal"
+                            "w-full justify-start bg-white text-left font-normal"
                           )}
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
@@ -503,6 +502,7 @@ const Form: NextPage = () => {
                 >
                   Наименование учебного учреждения
                 </label>
+
                 <Controller
                   control={control}
                   name="eduName"
@@ -517,10 +517,21 @@ const Form: NextPage = () => {
                             {item.name}
                           </SelectItem>
                         ))}
+                        <SelectItem value="Другое">Другое</SelectItem>
                       </SelectContent>
                     </Select>
                   )}
                 />
+                {/* 
+                {eduNames &&
+                  !Object.values(eduNames as any).includes(watch().eduName) && (
+                    <Input
+                      // onChange={(data: any) => field.onChange(data)}
+                      {...register("eduName", { required: true })}
+                      className=" mb-2 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                      // value={field.value}
+                    />
+                  )} */}
 
                 {errors.eduName && (
                   <span className="text-red-500">This field is required</span>
@@ -532,10 +543,10 @@ const Form: NextPage = () => {
                 >
                   Специальность
                 </label>
-                <input
+                <Input
                   id="specialty"
                   type="text"
-                  placeholder="specialty"
+                  placeholder="Программист, Сис-админ, Дизайнер"
                   className=" mb-2 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                   {...register("specialty", { required: true })}
                 />
@@ -549,12 +560,12 @@ const Form: NextPage = () => {
                 >
                   Курс
                 </label>
-                <input
+                <Input
                   id="year"
-                  type="text"
-                  placeholder="year"
+                  type="number"
+                  placeholder="Год курса"
                   className=" mb-2 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                  {...register("year", { required: true })}
+                  {...register("year", { required: true, min: 1, max: 6 })}
                 />
                 {errors.year && (
                   <span className="text-red-500">This field is required</span>
@@ -596,23 +607,6 @@ const Form: NextPage = () => {
                 {errors.apprenticeshipType && (
                   <span className="text-red-500">This field is required</span>
                 )}
-
-                {/* <label
-                    htmlFor="work"
-                    className="mb-2 block text-sm font-medium text-white"
-                  >
-                    Трудоустройство
-                  </label>
-                  <input
-                    id="work"
-                    type="checkbox"
-                    placeholder="work"
-                    className=" mb-2 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                    {...register("work", { required: true })}
-                  />
-                  {errors.work && (
-                    <span className="text-red-500">This field is required</span>
-                  )} */}
 
                 <div className=" flex justify-center">
                   <button

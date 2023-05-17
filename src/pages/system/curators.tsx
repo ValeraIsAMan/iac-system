@@ -12,6 +12,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Curator, CuratorSchema } from "@/server/schema/form.schema";
 import { Sidebar } from "@/components/Sidebar";
 import { Nav } from "@/components/Nav";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export const getServerSideProps = requireAuth(async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -196,13 +198,13 @@ const Curators: NextPage = () => {
               <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="flex border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600">
                   <div className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white">
-                    <input
+                    <Input
                       id="name"
                       placeholder="ФИО Куратора"
                       type="text"
                       className="text-black dark:text-white"
                       {...register("FIO", { required: true })}
-                    ></input>
+                    />
                     {errors.FIO && (
                       <span className="text-red-500">
                         This field is required
@@ -210,13 +212,13 @@ const Curators: NextPage = () => {
                     )}
                   </div>
                   <div className="px-6 py-4">
-                    <input
+                    <Input
                       id="telegram"
                       placeholder="TelegramID"
                       type="text"
                       className="text-black dark:text-white"
                       {...register("telegramID", { required: true })}
-                    ></input>
+                    />
                     {errors.telegramID && (
                       <span className="text-red-500">
                         This field is required
@@ -225,12 +227,12 @@ const Curators: NextPage = () => {
                   </div>
 
                   <div className="flex items-center space-x-3 px-6 py-4">
-                    <button
+                    <Button
                       type="submit"
-                      className="font-medium text-green-600 hover:underline dark:text-green-500"
+                      className="bg-green-600 font-medium hover:bg-green-500 hover:underline dark:bg-green-500"
                     >
                       Создать
-                    </button>
+                    </Button>
                   </div>
                 </div>
               </form>

@@ -19,6 +19,8 @@ import {
 } from "@/components/ui/select";
 
 import { Nav } from "@/components/Nav";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 export const getServerSideProps = requireAuth(async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -35,7 +37,7 @@ export const getServerSideProps = requireAuth(async (ctx) => {
   return { props: {} };
 });
 
-const Home: NextPage = () => {
+const Students: NextPage = () => {
   const {
     data: users,
     status: queryStatus,
@@ -314,7 +316,7 @@ const Home: NextPage = () => {
                       Документы подписаны
                     </th>
                     <th scope="col" className="px-6 py-3">
-                      Действие
+                      Действия
                     </th>
                   </tr>
                 </thead>
@@ -359,7 +361,7 @@ const Home: NextPage = () => {
                             target="_blank"
                             className="w-32 truncate text-left underline"
                           >
-                            Ссылка на диск
+                            Открыть
                           </a>
                         </td>
                         <td className=" px-6 py-4">
@@ -368,7 +370,7 @@ const Home: NextPage = () => {
                             target="_blank"
                             className="w-32 truncate text-left underline"
                           >
-                            Ссылка на диск
+                            Открыть
                           </a>
                         </td>
                         <td className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white">
@@ -422,35 +424,36 @@ const Home: NextPage = () => {
                           {user.signed ? "Да" : "Нет"}
                         </td>
                         <td className="flex items-center space-x-3 px-6 py-4">
-                          <button
-                            onClick={
-                              // () => console.log(selectedOption)
-                              () =>
-                                confirmStudent(
-                                  user.telegramID as string,
-                                  user.curator as string
-                                )
+                          <Button
+                            onClick={() =>
+                              confirmStudent(
+                                user.telegramID as string,
+                                user.curator as string
+                              )
                             }
-                            className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                            className="whitespace-nowrap border border-green-500 font-medium text-green-600 hover:underline dark:text-green-500"
+                            variant="link"
                           >
                             Подтвердить
-                          </button>
-                          <button
+                          </Button>
+                          <Button
                             onClick={() =>
                               documentSigned(user.telegramID as string)
                             }
-                            className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                            className="whitespace-nowrap border border-blue-500 font-medium text-blue-600 hover:underline dark:text-blue-500"
+                            variant="link"
                           >
                             Документы подписаны
-                          </button>
-                          <button
+                          </Button>
+                          <Button
                             onClick={() =>
                               deleteStudent(user.telegramID as string)
                             }
-                            className="font-medium text-red-600 hover:underline dark:text-red-500"
+                            className="whitespace-nowrap font-medium hover:underline "
+                            variant="destructive"
                           >
                             Удалить
-                          </button>
+                          </Button>
                         </td>
                       </tr>
                     );
@@ -465,4 +468,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export default Students;
