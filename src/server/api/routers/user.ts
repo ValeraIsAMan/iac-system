@@ -140,7 +140,7 @@ export const userRouter = createTRPCRouter({
           month: "2-digit",
           day: "2-digit",
         }
-      )} в 9:00, Вашим куратором будет ${curator}. Вступите, пожалуйста, в группу по следующей ссылке ${link}`;
+      )} в 9:00, Вашим куратором будет ${curator}. Вступите, пожалуйста, в группу по следующей ссылке ${link} . По окончании практики отчёт необходимо загрузить по ссылке: https://auth.mkrit.ru `;
 
       await fetch(
         `https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage?chat_id=${id}&text=${message}&parse_mode=HTML`
@@ -258,7 +258,7 @@ export const userRouter = createTRPCRouter({
         });
       }
 
-      const message = `Ваши документы готов к выдаче`;
+      const message = `Ваши документы готовы к выдаче`;
 
       await fetch(
         `https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage?chat_id=${id}&text=${message}&parse_mode=HTML`

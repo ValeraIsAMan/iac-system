@@ -49,15 +49,15 @@ const Home: NextPage = () => {
             {queryStatus === "success" && (
               <div className="text-2xl text-white">
                 <div className="flex">
-                  <p>Статус:</p>
+                  <p>Статус: </p>
                   {user.confirmed ? (
                     <span className="text-green-500"> Подтвержден</span>
                   ) : (
-                    <span className="text-red-500"> Неподтвержден</span>
+                    <span className="text-red-500"> Не подтвержден</span>
                   )}
                 </div>
                 <p>
-                  После подтверждения, вам прийдет сообщение с ссылкой в группу.
+                  После подтверждения, вам придёт сообщение с ссылкой в группу.
                 </p>
                 <p>
                   Дата начала практики:{" "}

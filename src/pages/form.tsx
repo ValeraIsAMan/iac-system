@@ -43,10 +43,9 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import UploadProgress from "@/components/uploadProgress";
-import UploadPreview from "@/components/uploadPreview";
+
 import { useCallback, useState } from "react";
 import { Input } from "@/components/ui/input";
-import { EduName } from "@prisma/client";
 
 initFirebase();
 
@@ -397,10 +396,7 @@ const Form: NextPage = () => {
                         } flex w-full justify-center`}
                       >
                         <div className="flex flex-col items-center justify-center text-white">
-                          <div
-                            {...getRootProps()}
-                            // className="rounded-md bg-white/5 p-4 "
-                          >
+                          <div {...getRootProps()}>
                             <input hidden {...getInputProps()} />
                             {/*                             
                             <>
@@ -439,7 +435,7 @@ const Form: NextPage = () => {
                   className=" -z-100 h-1 bg-transparent text-transparent"
                   {...register("napravlenie")}
                 />
-
+                {/* TODO: Move to index page after user is confirmed */}
                 <label
                   htmlFor="otchet"
                   className="mb-2 block text-sm font-medium text-white"
@@ -455,10 +451,7 @@ const Form: NextPage = () => {
                         } flex w-full justify-center`}
                       >
                         <div className="flex flex-col items-center justify-center text-white">
-                          <div
-                            {...getRootProps2()}
-                            // className="rounded-md bg-white/5 p-4 "
-                          >
+                          <div {...getRootProps2()}>
                             <input hidden {...getInputProps2()} />
                             {/* 
                             <>
@@ -521,21 +514,10 @@ const Form: NextPage = () => {
                             {item.name}
                           </SelectItem>
                         ))}
-                        {/* <SelectItem value="Другое">Другое</SelectItem> */}
                       </SelectContent>
                     </Select>
                   )}
                 />
-                {/* 
-                {eduNames &&
-                  !Object.values(eduNames as any).includes(watch().eduName) && (
-                    <Input
-                      // onChange={(data: any) => field.onChange(data)}
-                      {...register("eduName", { required: true })}
-                      className=" mb-2 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                      // value={field.value}
-                    />
-                  )} */}
 
                 {errors.eduName && (
                   <span className="text-red-500">Это поле обязательное!</span>
@@ -567,7 +549,7 @@ const Form: NextPage = () => {
                 <Input
                   id="year"
                   type="number"
-                  placeholder="Год курса"
+                  placeholder="Номер курса"
                   className=" mb-2 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                   {...register("year", { required: true, min: 1, max: 6 })}
                 />
@@ -581,15 +563,7 @@ const Form: NextPage = () => {
                 >
                   Вид практики...
                 </label>
-                {/* <select
-                  {...register("apprenticeshipType", { required: true })}
-                  id="apprenticeshipType"
-                  className="mb-2 block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                >
-                  <option value="Преддипломная">Преддипломная</option>
-                  <option value="Еще какаято">Еще какаято</option>
-                  <option value="Еще какаято2">Еще какаято2</option>
-                </select> */}
+
                 <Controller
                   control={control}
                   name="apprenticeshipType"
