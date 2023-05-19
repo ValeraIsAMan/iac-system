@@ -125,7 +125,6 @@ const Home: NextPage = () => {
             setFileName2(imageFile.name);
             setLoading2(false);
             setSuccess2(true);
-            mutate({ id: session?.user.id as string, fileURL: imageUrlOtchet });
           });
         }
       );
@@ -133,6 +132,10 @@ const Home: NextPage = () => {
       console.log(e.message);
       setLoading2(false);
     }
+  };
+
+  const sendOtchet = () => {
+    mutate({ id: session?.user.id as string, fileURL: imageUrlOtchet });
   };
 
   return (
@@ -189,14 +192,9 @@ const Home: NextPage = () => {
                   })}
                 </p>
                 {/* TODO: Add the otchet upload here */}
+                {/* {JSON.stringify(session)} */}
                 {user.confirmed && (
                   <>
-                    <label
-                      htmlFor="otchet"
-                      className="mb-2 block text-sm font-medium text-white"
-                    >
-                      Отчет
-                    </label>
                     <div className="my-4">
                       <div>
                         {!success2 && (
@@ -233,9 +231,15 @@ const Home: NextPage = () => {
                       {loading2 && <UploadProgress progress={progress2} />}
 
                       {success2 && (
-                        <p className="font-bold text-white">
-                          {fileName2} был отправлен!
-                        </p>
+                        <>
+                          <p className="font-bold text-white">{fileName2}</p>
+                          <Button
+                            className="font-bold text-white"
+                            onClick={() => sendOtchet()}
+                          >
+                            Отправить
+                          </Button>
+                        </>
                       )}
                     </div>
                   </>
