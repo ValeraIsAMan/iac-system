@@ -191,10 +191,9 @@ const Home: NextPage = () => {
                     day: "2-digit",
                   })}
                 </p>
-                {/* TODO: Add the otchet upload here */}
-                {/* {JSON.stringify(session)} */}
-                {user.confirmed && (
-                  <>
+
+                {user.confirmed ? (
+                  user.otchet == null ? (
                     <div className="my-4">
                       <div>
                         {!success2 && (
@@ -231,19 +230,24 @@ const Home: NextPage = () => {
                       {loading2 && <UploadProgress progress={progress2} />}
 
                       {success2 && (
-                        <>
-                          <p className="font-bold text-white">{fileName2}</p>
+                        <div className="flex">
+                          <p className="mr-4 font-bold text-white">
+                            {fileName2}
+                          </p>
                           <Button
                             className="font-bold text-white"
                             onClick={() => sendOtchet()}
+                            variant="secondary"
                           >
                             Отправить
                           </Button>
-                        </>
+                        </div>
                       )}
                     </div>
-                  </>
-                )}
+                  ) : (
+                    <p>Отчет был отправлен</p>
+                  )
+                ) : null}
               </div>
             )}
             {status === "authenticated"
