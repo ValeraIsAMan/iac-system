@@ -356,7 +356,7 @@ export const userRouter = createTRPCRouter({
         });
       }
 
-      if (exists.otchet !== "" || exists.otchet !== null) {
+      if (exists.otchet !== null) {
         throw new trpc.TRPCError({
           code: "BAD_REQUEST",
           message: "Отчет уже отправлен",
