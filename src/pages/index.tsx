@@ -45,7 +45,11 @@ const Home: NextPage = () => {
   const [loading2, setLoading2] = useState(false);
   const [success2, setSuccess2] = useState(false);
 
-  const { data: user, status: queryStatus } = api.user.getStatus.useQuery();
+  const {
+    data: user,
+    status: queryStatus,
+    refetch,
+  } = api.user.getStatus.useQuery();
 
   const { mutate } = api.user.submitOtchet.useMutation({
     onMutate: () => {
@@ -79,6 +83,7 @@ const Home: NextPage = () => {
           color: "#fff",
         },
       });
+      refetch();
     },
   });
 
@@ -237,7 +242,7 @@ const Home: NextPage = () => {
                           <Button
                             className="font-bold text-white"
                             onClick={() => sendOtchet()}
-                            variant="secondary"
+                            variant="outline"
                           >
                             Отправить
                           </Button>
