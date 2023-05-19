@@ -21,7 +21,7 @@ export const formRouter = createTRPCRouter({
         enddate,
         eduName,
         napravlenie,
-        otchet,
+
         specialty,
         year,
         apprenticeshipType,
@@ -49,7 +49,7 @@ export const formRouter = createTRPCRouter({
           enddate,
           eduName,
           napravlenie,
-          otchet,
+
           specialty,
           year,
           apprenticeshipType,
