@@ -364,7 +364,7 @@ const Students: NextPage = () => {
                             Открыть
                           </a>
                         </td>
-                        {user.otchet ? (
+                        {user.otchet !== null ? (
                           <td className=" px-6 py-4">
                             <a
                               href={user.otchet}
