@@ -364,15 +364,27 @@ const Students: NextPage = () => {
                             Открыть
                           </a>
                         </td>
-                        <td className=" px-6 py-4">
-                          <a
-                            href={user.otchet!}
-                            target="_blank"
-                            className="w-32 truncate text-left underline"
-                          >
-                            Открыть
-                          </a>
-                        </td>
+                        {user.otchet ? (
+                          <td className=" px-6 py-4">
+                            <a
+                              href={user.otchet}
+                              target="_blank"
+                              className="w-32 truncate text-left underline"
+                            >
+                              Открыть
+                            </a>
+                          </td>
+                        ) : (
+                          <td className=" px-6 py-4">
+                            <a
+                              href=""
+                              target="_blank"
+                              className="w-32 truncate text-left underline"
+                            >
+                              Не отправлен
+                            </a>
+                          </td>
+                        )}
                         <td className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white">
                           {!user.curator ? (
                             <Select

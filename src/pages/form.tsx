@@ -61,18 +61,13 @@ export const getServerSideProps = requireAuth(async () => {
 
 const Form: NextPage = () => {
   const [progress, setProgress] = useState<number>(0);
-  const [progress2, setProgress2] = useState<number>(0);
 
   const [imageUrlNapravlenie, setImageUrlNapravlenie] = useState<string>("");
-  const [imageUrlOtchet, setImageUrlOtchet] = useState<string>("");
 
   const [fileName1, setFileName1] = useState("");
-  const [fileName2, setFileName2] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [loading2, setLoading2] = useState(false);
-  const [success2, setSuccess2] = useState(false);
 
   const { data: session, status } = useSession();
   const loadingSession = status === "loading";
@@ -132,7 +127,7 @@ const Form: NextPage = () => {
 
   const onSubmit = (data: Form) => {
     data.napravlenie = imageUrlNapravlenie;
-    data.otchet = imageUrlOtchet;
+    // data.otchet = imageUrlOtchet;
 
     console.log(JSON.stringify(data, null, 4));
     mutate(data);
@@ -150,24 +145,6 @@ const Form: NextPage = () => {
     noClick: true,
     noKeyboard: true,
     onDrop,
-  });
-
-  const onDrop2 = useCallback((acceptedFiles: any[]) => {
-    // Upload files to storage
-    const file = acceptedFiles[0];
-    uploadImage2({ imageFile: file });
-  }, []);
-
-  const {
-    getRootProps: getRootProps2,
-    getInputProps: getInputProps2,
-    open: open2,
-  } = useDropzone({
-    useFsAccessApi: false,
-    maxFiles: 1,
-    noClick: true,
-    noKeyboard: true,
-    onDrop: onDrop2,
   });
 
   const uploadImage = async ({ imageFile }: Image) => {
@@ -201,40 +178,6 @@ const Form: NextPage = () => {
     } catch (e: any) {
       console.log(e.message);
       setLoading(false);
-    }
-  };
-
-  const uploadImage2 = async ({ imageFile }: Image) => {
-    try {
-      setLoading2(true);
-      const storageRef2 = ref(
-        storage,
-        "Отчет_" + new Date().toISOString() + "_" + imageFile.name
-      );
-      const uploadTask = uploadBytesResumable(storageRef2, imageFile);
-
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          setProgress2(progress);
-        },
-        (error) => {
-          console.log(error.message);
-        },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            setImageUrlOtchet(downloadURL);
-            setFileName2(imageFile.name);
-            setLoading2(false);
-            setSuccess2(true);
-          });
-        }
-      );
-    } catch (e: any) {
-      console.log(e.message);
-      setLoading2(false);
     }
   };
 
@@ -435,63 +378,6 @@ const Form: NextPage = () => {
                   className=" -z-100 h-1 bg-transparent text-transparent"
                   {...register("napravlenie")}
                 />
-                {/* TODO: Move to index page after user is confirmed */}
-                <label
-                  htmlFor="otchet"
-                  className="mb-2 block text-sm font-medium text-white"
-                >
-                  Отчет
-                </label>
-                <div className="my-4">
-                  <div>
-                    {!success2 && (
-                      <div
-                        className={` ${
-                          loading2 ? "hidden" : ""
-                        } flex w-full justify-center`}
-                      >
-                        <div className="flex flex-col items-center justify-center text-white">
-                          <div {...getRootProps2()}>
-                            <input hidden {...getInputProps2()} />
-                            {/* 
-                            <>
-                              <p className="font-bold">
-                                Перетащите свой отчет сюда
-                              </p>
-                              <p>Файл должен быть только PDF</p>
-                            </> */}
-                          </div>
-                          {/* <p>или</p> */}
-                          <div className="flex w-full justify-center">
-                            <Button
-                              variant={"outline"}
-                              type="button"
-                              onClick={open2}
-                            >
-                              Выберите файл
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {loading2 && <UploadProgress progress={progress2} />}
-
-                  {success2 && (
-                    <p className="font-bold text-white">{fileName2}</p>
-                  )}
-                </div>
-
-                <input
-                  type="text"
-                  value={imageUrlOtchet}
-                  hidden
-                  className=" -z-100 h-1 bg-transparent text-transparent"
-                  {...register("otchet", { required: true })}
-                />
-
-                {errors.otchet && <span>Это поле обязательное!</span>}
 
                 <label
                   htmlFor="eduName"

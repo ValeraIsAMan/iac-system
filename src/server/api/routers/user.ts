@@ -339,4 +339,43 @@ export const userRouter = createTRPCRouter({
         message: "Deleted curator successfully!",
       };
     }),
+  submitOtchet: protectedProcedure
+    .input(z.object({ id: z.string(), fileURL: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      const { id, fileURL } = input;
+      const exists = await ctx.prisma.user.findFirst({
+        where: {
+          telegramID: id,
+        },
+      });
+
+      if (!exists) {
+        throw new trpc.TRPCError({
+          code: "BAD_REQUEST",
+          message: "Студента нету такого",
+        });
+      }
+
+      if (exists.otchet !== "" || exists.otchet !== null) {
+        throw new trpc.TRPCError({
+          code: "BAD_REQUEST",
+          message: "Отчет уже отправлен",
+        });
+      }
+
+      const saveURL = await ctx.prisma.user.update({
+        where: {
+          telegramID: id,
+        },
+        data: {
+          otchet: fileURL,
+        },
+      });
+
+      return {
+        status: 201,
+        message: "Отчет отправлен удачно!",
+        result: saveURL,
+      };
+    }),
 });

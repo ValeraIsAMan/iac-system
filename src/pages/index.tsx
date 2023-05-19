@@ -7,12 +7,133 @@ import { useRouter } from "next/router";
 
 import { api } from "@/utils/api";
 
+import { useDropzone } from "react-dropzone";
+
+import initFirebase from "@/lib/firebaseInit";
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
+import UploadProgress from "@/components/uploadProgress";
+
+import { useCallback, useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import toast from "react-hot-toast";
+
+initFirebase();
+
+const storage = getStorage();
+
+type Image = {
+  imageFile: Blob;
+};
+
 const Home: NextPage = () => {
   const { data: session, status } = useSession();
-  const loading = status === "loading";
+  // const loading = status === "loading";
   const router = useRouter();
 
+  const [progress2, setProgress2] = useState<number>(0);
+
+  const [imageUrlOtchet, setImageUrlOtchet] = useState<string>("");
+
+  const [fileName2, setFileName2] = useState("");
+
+  const [loading2, setLoading2] = useState(false);
+  const [success2, setSuccess2] = useState(false);
+
   const { data: user, status: queryStatus } = api.user.getStatus.useQuery();
+
+  const { mutate } = api.user.submitOtchet.useMutation({
+    onMutate: () => {
+      toast.loading("Отправляется отчет...", {
+        id: "otchet",
+        style: {
+          borderRadius: "10px",
+          background: "#1E1E2A", //#1E1E2A
+          color: "#fff",
+        },
+      });
+    },
+    onError: (error) => {
+      toast.error(error.message, {
+        id: "otchet",
+        icon: "🥲",
+        style: {
+          borderRadius: "10px",
+          background: "#F43F5E",
+          color: "#fff",
+        },
+      });
+    },
+    onSuccess: (data) => {
+      toast.success(`Отчет отправлен!`, {
+        id: "otchet",
+        icon: "👏",
+        style: {
+          borderRadius: "10px",
+          background: "#22C55E",
+          color: "#fff",
+        },
+      });
+    },
+  });
+
+  const onDrop2 = useCallback((acceptedFiles: any[]) => {
+    // Upload files to storage
+    const file = acceptedFiles[0];
+    uploadImage2({ imageFile: file });
+  }, []);
+
+  const {
+    getRootProps: getRootProps2,
+    getInputProps: getInputProps2,
+    open: open2,
+  } = useDropzone({
+    useFsAccessApi: false,
+    maxFiles: 1,
+    noClick: true,
+    noKeyboard: true,
+    onDrop: onDrop2,
+  });
+
+  const uploadImage2 = async ({ imageFile }: Image) => {
+    try {
+      setLoading2(true);
+      const storageRef2 = ref(
+        storage,
+        "Отчет_" + new Date().toISOString() + "_" + imageFile.name
+      );
+      const uploadTask = uploadBytesResumable(storageRef2, imageFile);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setProgress2(progress);
+        },
+        (error) => {
+          console.log(error.message);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            setImageUrlOtchet(downloadURL);
+            setFileName2(imageFile.name);
+            setLoading2(false);
+            setSuccess2(true);
+            mutate({ id: session?.user.id as string, fileURL: imageUrlOtchet });
+          });
+        }
+      );
+    } catch (e: any) {
+      console.log(e.message);
+      setLoading2(false);
+    }
+  };
 
   return (
     <>
@@ -67,6 +188,58 @@ const Home: NextPage = () => {
                     day: "2-digit",
                   })}
                 </p>
+                {/* TODO: Add the otchet upload here */}
+                {user.confirmed && (
+                  <>
+                    <label
+                      htmlFor="otchet"
+                      className="mb-2 block text-sm font-medium text-white"
+                    >
+                      Отчет
+                    </label>
+                    <div className="my-4">
+                      <div>
+                        {!success2 && (
+                          <div
+                            className={` ${
+                              loading2 ? "hidden" : ""
+                            } flex w-full justify-center`}
+                          >
+                            <div className="flex flex-col items-center justify-center text-white">
+                              <div {...getRootProps2()}>
+                                <input hidden {...getInputProps2()} />
+
+                                <>
+                                  <p className="font-bold">
+                                    Перетащите свой отчет сюда
+                                  </p>
+                                </>
+                              </div>
+                              <p>или</p>
+                              <div className="flex w-full justify-center">
+                                <Button
+                                  variant={"outline"}
+                                  type="button"
+                                  onClick={open2}
+                                >
+                                  Выберите файл
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {loading2 && <UploadProgress progress={progress2} />}
+
+                      {success2 && (
+                        <p className="font-bold text-white">
+                          {fileName2} был отправлен!
+                        </p>
+                      )}
+                    </div>
+                  </>
+                )}
               </div>
             )}
             {status === "authenticated"

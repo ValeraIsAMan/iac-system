@@ -6,7 +6,7 @@ export const FormSchema = z.object({
   startdate: z.date(),
   enddate: z.date(),
   napravlenie: z.string(),
-  otchet: z.string(),
+  // otchet: z.string(),
   // curator: z.string(),
   eduName: z.string(),
   specialty: z.string(),
