@@ -33,6 +33,37 @@ export const userRouter = createTRPCRouter({
 
     return exists;
   }),
+  getMyStudents: protectedProcedure
+    .input(z.object({ telegramID: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const { telegramID } = input;
+      const getCurator = await ctx.prisma.curator.findUnique({
+        where: {
+          telegramID,
+        },
+      });
+      if (!getCurator) {
+        throw new trpc.TRPCError({
+          code: "CONFLICT",
+          message: "Curator doesnt exists.",
+        });
+      }
+
+      const exists = await ctx.prisma.user.findMany({
+        where: {
+          curator: getCurator?.FIO,
+        },
+      });
+
+      if (!exists) {
+        throw new trpc.TRPCError({
+          code: "CONFLICT",
+          message: "Users doesnt exists.",
+        });
+      }
+
+      return exists;
+    }),
   getAllCurators: protectedProcedure.query(async ({ ctx }) => {
     const exists = await ctx.prisma.curator.findMany();
 

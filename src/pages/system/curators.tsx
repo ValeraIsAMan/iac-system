@@ -15,6 +15,7 @@ import { Nav } from "@/components/Nav";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export const getServerSideProps = requireAuth(async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -230,20 +231,6 @@ const Curators: NextPage = () => {
                   </div>
                   <div className="px-6 py-4">
                     <Input
-                      id="link"
-                      placeholder="Ссылка"
-                      type="text"
-                      className="text-black dark:text-white"
-                      {...register("link", { required: true })}
-                    />
-                    {errors.link && (
-                      <span className="text-red-500">
-                        This field is required
-                      </span>
-                    )}
-                  </div>
-                  <div className="px-6 py-4">
-                    <Input
                       id="telegram"
                       placeholder="TelegramID"
                       type="text"
@@ -256,7 +243,20 @@ const Curators: NextPage = () => {
                       </span>
                     )}
                   </div>
-
+                  <div className="px-6 py-4">
+                    <Input
+                      id="link"
+                      placeholder="Ссылка"
+                      type="text"
+                      className="text-black dark:text-white"
+                      {...register("link", { required: true })}
+                    />
+                    {errors.link && (
+                      <span className="text-red-500">
+                        This field is required
+                      </span>
+                    )}
+                  </div>
                   <div className="flex items-center space-x-3 px-6 py-4">
                     <Button
                       type="submit"
@@ -267,6 +267,25 @@ const Curators: NextPage = () => {
                   </div>
                 </div>
               </form>
+            </div>
+            <div>
+              <Alert variant="default" className="mt-4 w-fit">
+                <AlertTitle>
+                  Откуда мне взять Telegram ID куратора? 🤔
+                </AlertTitle>
+                <AlertDescription>
+                  Нужно попросить куратора открыть{" "}
+                  <a
+                    href="https://t.me/myidbot"
+                    className="underline"
+                    target="_blank"
+                  >
+                    этого бота
+                  </a>{" "}
+                  в телеграмме и написать ему "/getid", он отправит куратору его
+                  Telegram ID!
+                </AlertDescription>
+              </Alert>
             </div>
           </div>
         </div>

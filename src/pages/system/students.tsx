@@ -20,7 +20,8 @@ import {
 
 import { Nav } from "@/components/Nav";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import React, { useRef } from "react";
+import { DownloadTableExcel } from "react-export-table-to-excel";
 
 export const getServerSideProps = requireAuth(async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -38,6 +39,8 @@ export const getServerSideProps = requireAuth(async (ctx) => {
 });
 
 const Students: NextPage = () => {
+  const tableRef = useRef(null);
+
   const {
     data: users,
     status: queryStatus,
@@ -262,9 +265,13 @@ const Students: NextPage = () => {
           <h1 className="my-2 text-center text-2xl font-semibold text-white">
             Студенты
           </h1>
+
           <div className="container">
             <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-              <table className="mx-auto text-sm text-gray-500 dark:text-gray-400">
+              <table
+                className="mx-auto text-sm text-gray-500 dark:text-gray-400"
+                ref={tableRef}
+              >
                 <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
                     <th scope="col" className="px-6 py-3">
@@ -472,6 +479,19 @@ const Students: NextPage = () => {
                   })}
                 </tbody>
               </table>
+            </div>
+            <div className="mt-4">
+              <DownloadTableExcel
+                filename={`Студенты-${new Date().toLocaleDateString("ru-RU", {
+                  year: "numeric",
+                  month: "2-digit",
+                  day: "2-digit",
+                })}`}
+                sheet="Студенты"
+                currentTableRef={tableRef.current}
+              >
+                <Button variant="secondary"> Экспорт в эксель </Button>
+              </DownloadTableExcel>
             </div>
           </div>
         </div>
