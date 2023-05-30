@@ -70,13 +70,13 @@ const MyStudents: NextPage = () => {
           <h1 className="my-2 text-center text-2xl font-semibold text-white">
             Мои Студенты
           </h1>
-          <div className="container">
-            <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+          <div className="container px-0 ">
+            <div className="relative h-[80vh] overflow-scroll shadow-md sm:rounded-lg">
               <table
-                className="mx-auto text-sm text-gray-500 dark:text-gray-400"
+                className="relative mx-auto text-sm text-gray-500 dark:text-gray-400"
                 ref={tableRef}
               >
-                <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                <thead className="sticky left-0 top-0 z-50 bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
                     <th scope="col" className="px-6 py-3">
                       Кол.
@@ -201,13 +201,25 @@ const MyStudents: NextPage = () => {
                         <td className="px-6 py-4">{user.year}</td>
                         <td className="px-6 py-4">{user.apprenticeshipType}</td>
                         <td className="px-6 py-4">
-                          {user.employment ? "Да" : "Нет"}
+                          {user.employment ? (
+                            <span className="text-green-500">Да</span>
+                          ) : (
+                            <span className="text-red-500">Нет</span>
+                          )}
                         </td>
                         <td className="px-6 py-4">
-                          {user.confirmed ? "Да" : "Нет"}
+                          {user.confirmed ? (
+                            <span className="text-green-500">Да</span>
+                          ) : (
+                            <span className="text-red-500">Нет</span>
+                          )}
                         </td>
                         <td className="px-6 py-4">
-                          {user.signed ? "Да" : "Нет"}
+                          {user.signed ? (
+                            <span className="text-green-500">Да</span>
+                          ) : (
+                            <span className="text-red-500">Нет</span>
+                          )}
                         </td>
                       </tr>
                     );
