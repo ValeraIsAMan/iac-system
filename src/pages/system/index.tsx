@@ -7,8 +7,6 @@ import { getServerAuthSession } from "@/server/auth";
 
 import { env } from "@/env.mjs";
 
-import { Sidebar } from "@/components/Sidebar";
-
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import Link from "next/link";
