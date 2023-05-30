@@ -24,7 +24,7 @@ export const getServerSideProps = requireAuth(async (ctx) => {
   if (!env.ADMIN_ID.includes(session?.user?.id as string)) {
     return {
       redirect: {
-        destination: "/auth/signin", // login path
+        destination: "/", // login path
         permanent: false,
       },
     };

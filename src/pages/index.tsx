@@ -35,39 +35,39 @@ type Image = {
   imageFile: Blob;
 };
 
-// export const getServerSideProps = requireAuth(async (ctx) => {
-//   const session = await getServerAuthSession(ctx);
+export const getServerSideProps = requireAuth(async (ctx) => {
+  const session = await getServerAuthSession(ctx);
 
-//   if (env.ADMIN_ID.includes(session?.user?.id as string)) {
-//     return {
-//       redirect: {
-//         destination: "/system", // admin path
-//         permanent: false,
-//       },
-//     };
-//   }
+  if (env.ADMIN_ID.includes(session?.user?.id as string)) {
+    return {
+      redirect: {
+        destination: "/system", // admin path
+        permanent: false,
+      },
+    };
+  }
 
-//   const curators = await prisma.curator.findMany({
-//     select: {
-//       telegramID: true,
-//     },
-//   });
+  const curators = await prisma.curator.findMany({
+    select: {
+      telegramID: true,
+    },
+  });
 
-//   if (curators == null) {
-//     return { props: {} };
-//   }
+  if (curators == null) {
+    return { props: {} };
+  }
 
-//   if (curators.some((value) => value.telegramID === session?.user.id)) {
-//     return {
-//       redirect: {
-//         destination: "/system/mystudents", // curator path
-//         permanent: false,
-//       },
-//     };
-//   }
+  if (curators.some((value) => value.telegramID === session?.user.id)) {
+    return {
+      redirect: {
+        destination: "/system/mystudents", // curator path
+        permanent: false,
+      },
+    };
+  }
 
-//   return { props: {} };
-// });
+  return { props: {} };
+});
 
 const Home: NextPage = () => {
   const { data: session, status } = useSession();
