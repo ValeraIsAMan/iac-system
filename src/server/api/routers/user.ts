@@ -164,17 +164,23 @@ export const userRouter = createTRPCRouter({
         ? curatorQuery?.link?.replace("https://", "")
         : curatorQuery?.link;
 
-      const message = `Вашу заявку на прохождение практики подтвердили! Начало практики: ${result?.startdate?.toLocaleDateString(
-        "ru-RU",
-        {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-        }
-      )} в 9:00, Вашим куратором будет ${curator}. Вступите, пожалуйста, в группу по следующей ссылке ${link} . По окончании практики отчёт необходимо загрузить по ссылке: https://auth.mkrit.ru `;
+      // Начало практики: ${result?.startdate?.toLocaleDateString(
+      //   "ru-RU",
+      //   {
+      //     year: "numeric",
+      //     month: "2-digit",
+      //     day: "2-digit",
+      //   }
+      // )} в 9:00,
+
+      const message = `Вашу заявку на прохождение практики подтвердили! Вашим куратором будет ${curator}. Вступите, пожалуйста, в группу по следующей ссылке ${link} . По окончании практики отчёт необходимо загрузить по ссылке: https://auth.mkrit.ru `;
 
       await fetch(
-        `https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage?chat_id=${id}&text=${message}&parse_mode=HTML`
+        `https://api.telegram.org/bot${
+          env.BOT_TOKEN
+        }/sendMessage?chat_id=${id}&text=${encodeURIComponent(
+          message
+        )}&parse_mode=HTML`
       );
 
       return {
@@ -257,7 +263,7 @@ export const userRouter = createTRPCRouter({
         message: "Curator deleted successfully!",
       };
     }),
-  confirmSigning: protectedProcedure
+  confirmSigningNapravlenie: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input, ctx }) => {
       const { id } = input; //telegram id
@@ -278,7 +284,7 @@ export const userRouter = createTRPCRouter({
           telegramID: id,
         },
         data: {
-          signed: true,
+          signedNapravlenie: true,
         },
       });
 
@@ -289,7 +295,50 @@ export const userRouter = createTRPCRouter({
         });
       }
 
-      const message = `Ваши документы готовы к выдаче`;
+      const message = `Ваше направление было подписано`;
+
+      await fetch(
+        `https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage?chat_id=${id}&text=${message}&parse_mode=HTML`
+      );
+
+      return {
+        status: 201,
+        message: "Signed documents successfully!",
+      };
+    }),
+  confirmSigningOtchet: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      const { id } = input; //telegram id
+
+      const exists = await ctx.prisma.user.findFirst({
+        where: { telegramID: id },
+      });
+
+      if (!exists) {
+        throw new trpc.TRPCError({
+          code: "BAD_REQUEST",
+          message: "Пользователя не существует",
+        });
+      }
+
+      const result = await ctx.prisma.user.update({
+        where: {
+          telegramID: id,
+        },
+        data: {
+          signedOtchet: true,
+        },
+      });
+
+      if (!result) {
+        throw new trpc.TRPCError({
+          code: "PARSE_ERROR",
+          message: "Telegram ID doesn't exists.",
+        });
+      }
+
+      const message = `Ваш отчет был подписан`;
 
       await fetch(
         `https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage?chat_id=${id}&text=${message}&parse_mode=HTML`

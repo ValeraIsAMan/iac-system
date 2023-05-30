@@ -9,7 +9,6 @@ import toast from "react-hot-toast";
 import { Cross2Icon } from "@radix-ui/react-icons";
 import { env } from "@/env.mjs";
 
-import { Sidebar } from "@/components/Sidebar";
 import {
   Select,
   SelectContent,
@@ -20,7 +19,7 @@ import {
 
 import { Nav } from "@/components/Nav";
 import { Button } from "@/components/ui/button";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { DownloadTableExcel } from "react-export-table-to-excel";
 
 export const getServerSideProps = requireAuth(async (ctx) => {
@@ -40,6 +39,8 @@ export const getServerSideProps = requireAuth(async (ctx) => {
 
 const Students: NextPage = () => {
   const tableRef = useRef(null);
+
+  const [open, isOpen] = useState(false);
 
   const {
     data: users,
@@ -195,41 +196,79 @@ const Students: NextPage = () => {
       refetch();
     },
   });
-  const { mutate: signMutate } = api.user.confirmSigning.useMutation({
-    onMutate: () => {
-      toast.loading("Отправление...", {
-        id: "sign",
-        style: {
-          borderRadius: "10px",
-          background: "#1E1E2A", //#1E1E2A
-          color: "#fff",
-        },
-      });
-    },
-    onError: (error) => {
-      toast.error(error.message, {
-        id: "sign",
-        icon: "🥲",
-        style: {
-          borderRadius: "10px",
-          background: "#F43F5E",
-          color: "#fff",
-        },
-      });
-    },
-    onSuccess: (data) => {
-      toast.success(`Студент оповещен`, {
-        id: "sign",
-        icon: "👏",
-        style: {
-          borderRadius: "10px",
-          background: "#22C55E",
-          color: "#fff",
-        },
-      });
-      refetch();
-    },
-  });
+  const { mutate: signMutateNapravlenie } =
+    api.user.confirmSigningNapravlenie.useMutation({
+      onMutate: () => {
+        toast.loading("Отправление...", {
+          id: "sign",
+          style: {
+            borderRadius: "10px",
+            background: "#1E1E2A", //#1E1E2A
+            color: "#fff",
+          },
+        });
+      },
+      onError: (error) => {
+        toast.error(error.message, {
+          id: "sign",
+          icon: "🥲",
+          style: {
+            borderRadius: "10px",
+            background: "#F43F5E",
+            color: "#fff",
+          },
+        });
+      },
+      onSuccess: (data) => {
+        toast.success(`Студент оповещен`, {
+          id: "sign",
+          icon: "👏",
+          style: {
+            borderRadius: "10px",
+            background: "#22C55E",
+            color: "#fff",
+          },
+        });
+        refetch();
+      },
+    });
+
+  const { mutate: signMutateOtchet } =
+    api.user.confirmSigningOtchet.useMutation({
+      onMutate: () => {
+        toast.loading("Отправление...", {
+          id: "sign",
+          style: {
+            borderRadius: "10px",
+            background: "#1E1E2A", //#1E1E2A
+            color: "#fff",
+          },
+        });
+      },
+      onError: (error) => {
+        toast.error(error.message, {
+          id: "sign",
+          icon: "🥲",
+          style: {
+            borderRadius: "10px",
+            background: "#F43F5E",
+            color: "#fff",
+          },
+        });
+      },
+      onSuccess: (data) => {
+        toast.success(`Студент оповещен`, {
+          id: "sign",
+          icon: "👏",
+          style: {
+            borderRadius: "10px",
+            background: "#22C55E",
+            color: "#fff",
+          },
+        });
+        refetch();
+      },
+    });
 
   const deleteStudent = (telegramID: string) => {
     deleteUser({ id: telegramID });
@@ -247,8 +286,17 @@ const Students: NextPage = () => {
     curatorDeleteMutate({ id: telegramID });
   };
 
-  const documentSigned = (telegramID: string) => {
-    signMutate({ id: telegramID });
+  const napravlenieSigned = (telegramID: string) => {
+    signMutateNapravlenie({ id: telegramID });
+  };
+
+  const otchetSigned = (telegramID: string) => {
+    signMutateOtchet({ id: telegramID });
+  };
+
+  const openSidebar = () => {
+    isOpen((prev) => !prev);
+    console.log("click");
   };
 
   return (
@@ -259,20 +307,19 @@ const Students: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex h-screen bg-gradient-to-b from-[#2e026d] to-[#15162c]">
-        <Sidebar />
-        <div className=" w-5/6 overflow-scroll p-4">
+        <div className=" w-full overflow-scroll">
           <Nav refetch={refetch} dataUpdatedAt={dataUpdatedAt} />
-          <h1 className="my-2 text-center text-2xl font-semibold text-white">
+          <h1 className="mb-2 text-center text-2xl font-semibold text-white">
             Студенты
           </h1>
 
-          <div className="container px-0  ">
-            <div className="relative h-[80vh] overflow-scroll shadow-md sm:rounded-lg">
+          <div className="mx-0 w-full px-0  ">
+            <div className="relative h-[81vh] overflow-scroll shadow-md sm:rounded-lg">
               <table
                 className="relative mx-auto text-sm text-gray-500 dark:text-gray-400"
                 ref={tableRef}
               >
-                <thead className="sticky left-0 top-0 z-50 bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                <thead className="sticky left-0 top-0 z-40 bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
                     <th scope="col" className="px-6 py-3">
                       Кол.
@@ -320,7 +367,10 @@ const Students: NextPage = () => {
                       Подтвержден
                     </th>
                     <th scope="col" className="px-6 py-3">
-                      Документы подписаны
+                      Направление подписано
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      Отчет подписан
                     </th>
                     <th scope="col" className="px-6 py-3">
                       Действия
@@ -362,15 +412,27 @@ const Students: NextPage = () => {
                         <td className="px-6 py-4">
                           {user.enddate?.toLocaleDateString()}
                         </td>
-                        <td className=" px-6 py-4">
-                          <a
-                            href={user.napravlenie!}
-                            target="_blank"
-                            className="w-32 truncate text-left underline"
-                          >
-                            Открыть
-                          </a>
-                        </td>
+                        {user.napravlenie !== null ? (
+                          <td className=" px-6 py-4">
+                            <a
+                              href={user.napravlenie!}
+                              target="_blank"
+                              className="w-32 truncate text-left underline"
+                            >
+                              Открыть
+                            </a>
+                          </td>
+                        ) : (
+                          <td className=" px-6 py-4">
+                            <a
+                              href=""
+                              target="_blank"
+                              className="w-32 truncate text-left underline"
+                            >
+                              Не отправлен
+                            </a>
+                          </td>
+                        )}
                         {user.otchet !== null ? (
                           <td className=" px-6 py-4">
                             <a
@@ -429,11 +491,19 @@ const Students: NextPage = () => {
                             )
                           )}
                         </td>
-                        <td className="px-6 py-4">{user.eduName}</td>
-                        <td className="px-6 py-4">{user.specialty}</td>
-                        <td className="px-6 py-4">{user.year}</td>
-                        <td className="px-6 py-4">{user.apprenticeshipType}</td>
-                        <td className="px-6 py-4">
+                        <td className="whitespace-nowrap px-6 py-4">
+                          {user.eduName}
+                        </td>
+                        <td className="whitespace-nowrap px-6 py-4">
+                          {user.specialty}
+                        </td>
+                        <td className="whitespace-nowrap px-6 py-4">
+                          {user.year}
+                        </td>
+                        <td className="whitespace-nowrap px-6 py-4">
+                          {user.apprenticeshipType}
+                        </td>
+                        <td className="whitespace-nowrap px-6 py-4">
                           {user.employment ? (
                             <span className="text-green-500">Да</span>
                           ) : (
@@ -448,7 +518,14 @@ const Students: NextPage = () => {
                           )}
                         </td>
                         <td className="px-6 py-4">
-                          {user.signed ? (
+                          {user.signedNapravlenie ? (
+                            <span className="text-green-500">Да</span>
+                          ) : (
+                            <span className="text-red-500">Нет</span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4">
+                          {user.signedOtchet ? (
                             <span className="text-green-500">Да</span>
                           ) : (
                             <span className="text-red-500">Нет</span>
@@ -469,13 +546,23 @@ const Students: NextPage = () => {
                           </Button>
                           <Button
                             onClick={() =>
-                              documentSigned(user.telegramID as string)
+                              napravlenieSigned(user.telegramID as string)
                             }
                             className="whitespace-nowrap border border-blue-500 font-medium text-blue-600 hover:underline dark:text-blue-500"
                             variant="link"
                           >
-                            Документы подписаны
+                            Подписано Направление
                           </Button>
+                          <Button
+                            onClick={() =>
+                              otchetSigned(user.telegramID as string)
+                            }
+                            className="whitespace-nowrap border border-blue-500 font-medium text-blue-600 hover:underline dark:text-blue-500"
+                            variant="link"
+                          >
+                            Подписан Отчет
+                          </Button>
+
                           <Button
                             onClick={() =>
                               deleteStudent(user.telegramID as string)

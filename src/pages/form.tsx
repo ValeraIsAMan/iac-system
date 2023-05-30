@@ -106,6 +106,7 @@ const Form: NextPage = () => {
           background: "#F43F5E",
           color: "#fff",
         },
+        duration: 10000,
       });
     },
     onSuccess: (data) => {

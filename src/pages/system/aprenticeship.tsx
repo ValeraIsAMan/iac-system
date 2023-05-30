@@ -15,7 +15,7 @@ import {
   PraktSchema,
   PraktType,
 } from "@/server/schema/form.schema";
-import { Sidebar } from "@/components/Sidebar";
+
 import { Nav } from "@/components/Nav";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -140,16 +140,15 @@ const Aprenticeship: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex h-screen bg-gradient-to-b from-[#2e026d] to-[#15162c]">
-        <Sidebar />
-        <div className=" w-5/6 overflow-scroll p-4">
+        <div className=" w-full overflow-scroll">
           <Nav refetch={refetch} dataUpdatedAt={dataUpdatedAt} />
           <h1 className="my-2 text-center text-2xl font-semibold text-white">
             Тип практики
           </h1>
 
           <div className="container">
-            <div className=" relative h-full overflow-x-scroll shadow-md sm:rounded-lg">
-              <table className=" w-full text-left text-sm text-gray-500 dark:text-gray-400">
+            <div className=" relative overflow-x-auto shadow-md sm:rounded-lg">
+              <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
                 <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
                     <th scope="col" className="px-6 py-3">

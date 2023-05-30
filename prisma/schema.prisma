@@ -65,8 +65,17 @@ model User {
   image              String?
   confirmed          Boolean?  @default(false)
   signed             Boolean?  @default(false)
+  signedOtchet       Boolean?  @default(false)
+  signedNapravlenie  Boolean?  @default(false)
+  role               Role      @default(STUDENT)
   accounts           Account[]
   sessions           Session[]
+}
+
+enum Role {
+  STUDENT
+  ADMIN
+  CURATOR
 }
 
 model Curator {

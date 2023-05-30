@@ -21,11 +21,27 @@ export const formRouter = createTRPCRouter({
         enddate,
         eduName,
         napravlenie,
-
         specialty,
         year,
         apprenticeshipType,
       } = input;
+
+      if (
+        FIO == "" ||
+        phonenumber == "" ||
+        startdate == null ||
+        enddate == null ||
+        eduName == "" ||
+        napravlenie == "" ||
+        specialty == "" ||
+        year == "" ||
+        apprenticeshipType == ""
+      ) {
+        throw new trpc.TRPCError({
+          code: "BAD_REQUEST",
+          message: "Запролните все поля",
+        });
+      }
 
       const name = ctx.session.user.name;
 
@@ -49,7 +65,6 @@ export const formRouter = createTRPCRouter({
           enddate,
           eduName,
           napravlenie,
-
           specialty,
           year,
           apprenticeshipType,

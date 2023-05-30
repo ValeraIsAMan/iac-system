@@ -4,7 +4,7 @@ import Head from "next/head";
 import { api } from "@/utils/api";
 import { requireAuth } from "@/utils/requireAuth";
 import { getServerAuthSession } from "@/server/auth";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { DownloadTableExcel } from "react-export-table-to-excel";
 
 import { Nav } from "@/components/Nav";
@@ -56,6 +56,11 @@ const MyStudents: NextPage = () => {
     telegramID: session?.user?.id as string,
   });
 
+  const [open, isOpen] = useState(false);
+
+  const openSidebar = () => {
+    isOpen((prev) => !prev);
+  };
   return (
     <>
       <Head>
@@ -65,18 +70,19 @@ const MyStudents: NextPage = () => {
       </Head>
       <main className="flex h-screen bg-gradient-to-b from-[#2e026d] to-[#15162c]">
         {/* <Sidebar /> */}
-        <div className=" w-full overflow-scroll p-4">
+        <div className=" w-full overflow-scroll">
           <Nav refetch={refetch} dataUpdatedAt={dataUpdatedAt} />
           <h1 className="my-2 text-center text-2xl font-semibold text-white">
             Мои Студенты
           </h1>
-          <div className="container px-0 ">
-            <div className="relative h-[80vh] overflow-scroll shadow-md sm:rounded-lg">
+
+          <div className="mx-0 w-full px-0  ">
+            <div className="relative h-[81vh] overflow-scroll shadow-md sm:rounded-lg">
               <table
                 className="relative mx-auto text-sm text-gray-500 dark:text-gray-400"
                 ref={tableRef}
               >
-                <thead className="sticky left-0 top-0 z-50 bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                <thead className="sticky left-0 top-0 z-30 bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
                     <th scope="col" className="px-6 py-3">
                       Кол.
@@ -122,9 +128,6 @@ const MyStudents: NextPage = () => {
                     </th>
                     <th scope="col" className="px-6 py-3">
                       Подтвержден
-                    </th>
-                    <th scope="col" className="px-6 py-3">
-                      Документы подписаны
                     </th>
                   </tr>
                 </thead>
@@ -209,13 +212,6 @@ const MyStudents: NextPage = () => {
                         </td>
                         <td className="px-6 py-4">
                           {user.confirmed ? (
-                            <span className="text-green-500">Да</span>
-                          ) : (
-                            <span className="text-red-500">Нет</span>
-                          )}
-                        </td>
-                        <td className="px-6 py-4">
-                          {user.signed ? (
                             <span className="text-green-500">Да</span>
                           ) : (
                             <span className="text-red-500">Нет</span>

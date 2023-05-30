@@ -22,6 +22,10 @@ import { useCallback, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
+import { requireAuth } from "@/utils/requireAuth";
+import { getServerAuthSession } from "@/server/common/get-server-auth-session";
+import { env } from "@/env.mjs";
+import { prisma } from "@/server/db";
 
 initFirebase();
 
@@ -30,6 +34,40 @@ const storage = getStorage();
 type Image = {
   imageFile: Blob;
 };
+
+export const getServerSideProps = requireAuth(async (ctx) => {
+  const session = await getServerAuthSession(ctx);
+
+  if (env.ADMIN_ID.includes(session?.user?.id as string)) {
+    return {
+      redirect: {
+        destination: "/system", // admin path
+        permanent: false,
+      },
+    };
+  }
+
+  const curators = await prisma.curator.findMany({
+    select: {
+      telegramID: true,
+    },
+  });
+
+  if (curators == null) {
+    return { props: {} };
+  }
+
+  if (curators.some((value) => value.telegramID === session?.user.id)) {
+    return {
+      redirect: {
+        destination: "/system/mystudents", // curator path
+        permanent: false,
+      },
+    };
+  }
+
+  return { props: {} };
+});
 
 const Home: NextPage = () => {
   const { data: session, status } = useSession();
