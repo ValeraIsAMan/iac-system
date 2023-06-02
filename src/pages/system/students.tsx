@@ -40,18 +40,14 @@ export const getServerSideProps = requireAuth(async (ctx) => {
 const Students: NextPage = () => {
   const tableRef = useRef(null);
 
-  const [open, isOpen] = useState(false);
 
   const {
     data: users,
-    status: queryStatus,
     refetch,
-    isRefetching,
     dataUpdatedAt,
   } = api.user.getAllUsers.useQuery();
 
-  const { data: curators, refetch: refetchCurator } =
-    api.user.getAllCurators.useQuery();
+  const { data: curators } = api.user.getAllCurators.useQuery();
 
   const { mutate: studentMutate } = api.user.confirmStudent.useMutation({
     onMutate: () => {
@@ -293,12 +289,7 @@ const Students: NextPage = () => {
   const otchetSigned = (telegramID: string) => {
     signMutateOtchet({ id: telegramID });
   };
-
-  const openSidebar = () => {
-    isOpen((prev) => !prev);
-    console.log("click");
-  };
-
+  
   return (
     <>
       <Head>

@@ -1,7 +1,6 @@
-import { type NextPage } from "next";
+import { GetServerSideProps, type NextPage } from "next";
 import Head from "next/head";
-import Link from "next/link";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
 import { useRouter } from "next/router";
 
@@ -19,10 +18,8 @@ import {
 import UploadProgress from "@/components/uploadProgress";
 
 import { useCallback, useState } from "react";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
-import { requireAuth } from "@/utils/requireAuth";
 import { getServerAuthSession } from "@/server/common/get-server-auth-session";
 import { env } from "@/env.mjs";
 import { prisma } from "@/server/db";
@@ -35,39 +32,39 @@ type Image = {
   imageFile: Blob;
 };
 
-// export const getServerSideProps = requireAuth(async (ctx) => {
-//   const session = await getServerAuthSession(ctx);
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const session = await getServerAuthSession(ctx);
 
-//   if (env.ADMIN_ID.includes(session?.user?.id as string)) {
-//     return {
-//       redirect: {
-//         destination: "/system", // admin path
-//         permanent: false,
-//       },
-//     };
-//   }
+  if (env.ADMIN_ID.includes(session?.user?.id as string)) {
+    return {
+      redirect: {
+        destination: "/system", // admin path
+        permanent: false,
+      },
+    };
+  }
 
-//   const curators = await prisma.curator.findMany({
-//     select: {
-//       telegramID: true,
-//     },
-//   });
+  const curators = await prisma.curator.findMany({
+    select: {
+      telegramID: true,
+    },
+  });
 
-//   if (curators == null) {
-//     return { props: {} };
-//   }
+  if (curators == null) {
+    return { props: {} };
+  }
 
-//   if (curators.some((value) => value.telegramID === session?.user.id)) {
-//     return {
-//       redirect: {
-//         destination: "/system/mystudents", // curator path
-//         permanent: false,
-//       },
-//     };
-//   }
+  if (curators.some((value) => value.telegramID === session?.user.id)) {
+    return {
+      redirect: {
+        destination: "/system/mystudents", // curator path
+        permanent: false,
+      },
+    };
+  }
 
-//   return { props: {} };
-// });
+  return { props: {} };
+};
 
 const Home: NextPage = () => {
   const { data: session, status } = useSession();
@@ -111,7 +108,7 @@ const Home: NextPage = () => {
         },
       });
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast.success(`Отчет отправлен!`, {
         id: "otchet",
         icon: "👏",
