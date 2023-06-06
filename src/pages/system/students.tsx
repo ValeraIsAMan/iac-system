@@ -40,7 +40,6 @@ export const getServerSideProps = requireAuth(async (ctx) => {
 const Students: NextPage = () => {
   const tableRef = useRef(null);
 
-
   const {
     data: users,
     refetch,
@@ -289,7 +288,7 @@ const Students: NextPage = () => {
   const otchetSigned = (telegramID: string) => {
     signMutateOtchet({ id: telegramID });
   };
-  
+
   return (
     <>
       <Head>
@@ -383,7 +382,7 @@ const Students: NextPage = () => {
                         </th>
                         <th
                           scope="row"
-                          className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
+                          className="sticky left-0 whitespace-nowrap border bg-white px-6 py-4 font-medium text-gray-900 shadow-xl hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-600"
                         >
                           {user.FIO}
                         </th>

@@ -38,7 +38,7 @@ export const Nav = ({
       description: "",
     },
     {
-      title: "Учереждения",
+      title: "Учреждения",
       href: "/system/educationfacility",
       description: "",
     },
@@ -55,6 +55,11 @@ export const Nav = ({
     {
       title: "Главная",
       href: "/",
+      description: "",
+    },
+    {
+      title: "Эксперементальная таблица студентов",
+      href: "/system/x-students",
       description: "",
     },
   ];
