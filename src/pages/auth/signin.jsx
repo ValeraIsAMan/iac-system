@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 
 const Signin = () => {
   const router = useRouter();
-  const botUsername = "IACSystemBot";
+  const botUsername = "Star_practik_bot";
   // const botUsername = "testaicbot";
 
   return (
