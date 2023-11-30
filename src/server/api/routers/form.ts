@@ -45,16 +45,16 @@ export const formRouter = createTRPCRouter({
 
       const name = ctx.session.user.name;
 
-      const exists = await ctx.prisma.user.findFirst({
-        where: { name },
-      });
+      // const exists = await ctx.prisma.user.findFirst({
+      //   where: { name },
+      // });
 
-      if (exists) {
-        throw new trpc.TRPCError({
-          code: "CONFLICT",
-          message: "User already exists.",
-        });
-      }
+      // if (exists) {
+      //   throw new trpc.TRPCError({
+      //     code: "CONFLICT",
+      //     message: "User already exists.",
+      //   });
+      // }
 
       const result = await ctx.prisma.user.create({
         data: {
